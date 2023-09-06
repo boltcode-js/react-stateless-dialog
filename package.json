@@ -1,0 +1,12 @@
+{
+  "name": "react-stateless-dialog",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "test-packages/*"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "lerna": "^7.2.0"
+  }
+}
