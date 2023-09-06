@@ -1,0 +1,12 @@
+{
+  "extends": "@tsconfig/react-native/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./lib",
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noEmit": false,
+    "declaration": true,
+    "types": ["react-native", "jest", "node"]
+  },
+  "include": ["src"]
+}

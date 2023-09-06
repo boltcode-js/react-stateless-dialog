@@ -1,0 +1,30 @@
+{
+  "name": "@react-stateless-dialog/core",
+  "repository": {
+    "url": "https://github.com/boltcode-js/react-stateless-dialog",
+    "directory": "packages/core",
+    "type": "git"
+  },
+  "version": "0.1.1",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "build": "tsc --project ./tsconfig.json",
+    "clean": "rm -rf lib",
+    "pub": "yarn clean && yarn build && yarn publish --access public",
+    "compile": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0"
+  },
+  "dependencies": {
+    "zustand": "^4.4.1"
+  },
+  "devDependencies": {
+    "typescript": "4.8.4"
+  }
+}
