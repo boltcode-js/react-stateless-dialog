@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo } from 'react';
 import { FlatList, ListRenderItemInfo, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { DialogContext, DialogManager } from '@react-stateless-dialog/core/src';
+import { DialogManager } from '@react-stateless-dialog/core/src';
 import { ConfirmDialog } from './confirm-dialog';
+import { DialogComponent } from '@react-stateless-dialog/core/src/dialog-manager/models/dialog-component';
 
-export const KeyboardDialog = (_uProps: DialogContext<null, null>) => {
+export const KeyboardDialog: DialogComponent<null, null> = (_uProps) => {
   const data = useMemo(() => {
     const size = 100;
     let _data = new Array<string>(size);
@@ -32,3 +33,5 @@ export const KeyboardDialog = (_uProps: DialogContext<null, null>) => {
     </View>
   );
 };
+
+KeyboardDialog.backgroundColor = 'red';

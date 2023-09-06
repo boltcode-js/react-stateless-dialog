@@ -1,4 +1,4 @@
-export type DialogConfig = {
+export interface DialogConfig {
   /**
    * Background color applied to the whole screen, you can use alpha channel if you don't want to hide completely the screen.
    */
@@ -23,7 +23,7 @@ export type DialogConfig = {
    * Perform a cancel when click on back button (android only)
    */
   androidCancelOnClickBack: boolean;
-};
+}
 
 export const DIALOG_DEFAULT_CONFIG: DialogConfig = {
   backgroundColor: "#e1e3e67f",
