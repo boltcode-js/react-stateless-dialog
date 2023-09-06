@@ -1,24 +1,32 @@
-import React from 'react';
-import { Button, Text, View, ViewStyle } from 'react-native';
+import React, { useMemo } from 'react';
+import { Text, View, ViewStyle } from 'react-native';
 import { SnackbarComponent } from '@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-component';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { invertColor } from '@react-stateless-dialog/core/src/utils/utils';
 
 export const BannerSnackbar: SnackbarComponent<{ message: string }> = (props) => {
-  const { args, config, onClose } = props;
+  const { args, config } = props;
 
   const insets = useSafeAreaInsets();
 
-  const style: ViewStyle = { borderWidth: 1, backgroundColor: 'orange', padding: 20, flexDirection: 'row' };
-  if (config.vertical === 'top') {
-    style.paddingTop = 20 + insets.top;
-  } else if (config.vertical === 'bottom') {
-    style.paddingBottom = 20 + insets.bottom;
-  }
+  const style = useMemo(() => {
+    const _style: ViewStyle = { backgroundColor: 'orange', padding: 10, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' };
+    if (config.vertical === 'top') {
+      _style.paddingTop = 10 + insets.top;
+    } else if (config.vertical === 'bottom') {
+      _style.paddingBottom = 10 + insets.bottom;
+    }
+    return _style;
+  }, [config.vertical, insets.bottom, insets.top]);
 
   return (
     <View style={style}>
-      <Text>{args.message}</Text>
-      <Button title="(close)" onPress={onClose} />
+      <Text style={{ color: invertColor('orange', true), fontSize: 18, textAlign: 'center' }}>{args.message}</Text>
     </View>
   );
 };
+
+BannerSnackbar.insideSafeArea = false;
+BannerSnackbar.vertical = 'top';
+BannerSnackbar.horizontal = 'center';
+BannerSnackbar.animationType = 'slide';

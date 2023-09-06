@@ -4,6 +4,7 @@ import { SnackbarManager } from '@react-stateless-dialog/core/src';
 import { BannerSnackbar } from './snackbars/banner-snackbar';
 import CheckBox from '@react-native-community/checkbox';
 import { SnackbarConfig } from '@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config';
+import { ToastSnackbar } from './snackbars/toast-snackbar';
 
 export const SnackbarManagerScreen = () => {
   const [vertical, setVertical] = useState<SnackbarConfig['vertical']>('top');
@@ -16,7 +17,13 @@ export const SnackbarManagerScreen = () => {
         <Button
           title="Banner Snackbar"
           onPress={() => {
-            SnackbarManager().push(BannerSnackbar, { message: 'Hello world' }, { duration: 2000, vertical, horizontal, animationType, insideSafeArea: true });
+            SnackbarManager().push(BannerSnackbar, { message: 'Hello world' }, { duration: 2000, vertical, horizontal, animationType });
+          }}
+        />
+        <Button
+          title="Toast Snackbar"
+          onPress={() => {
+            SnackbarManager().push(ToastSnackbar, { message: 'Hello world' }, { duration: 2000, vertical, horizontal, animationType, insideSafeArea: true });
           }}
         />
       </View>
@@ -50,6 +57,10 @@ export const SnackbarManagerScreen = () => {
             <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }} onPress={() => setHorizontal('right')}>
               <CheckBox value={horizontal === 'right'} />
               <Text style={{ marginStart: 10 }}>Right</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }} onPress={() => setHorizontal('stretch')}>
+              <CheckBox value={horizontal === 'stretch'} />
+              <Text style={{ marginStart: 10 }}>Stretch</Text>
             </TouchableOpacity>
           </View>
         </View>

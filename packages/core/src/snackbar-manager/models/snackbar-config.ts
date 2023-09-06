@@ -12,7 +12,7 @@ export type SnackbarConfig = {
   /**
    * The horizontal position of the snackbar
    */
-  horizontal: "left" | "center" | "right";
+  horizontal: "left" | "center" | "right" | "stretch";
 
   /**
    * The animation of the snackbar

@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
-import { View, ViewStyle } from "react-native";
-import Animated from "react-native-reanimated";
+import { StyleProp, View, ViewStyle } from "react-native";
+import Animated, { AnimatedStyle } from "react-native-reanimated";
 import { SnackbarInstance } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-instance";
 import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { SnackbarConfig } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 
 export type GlobalBannerViewProps = {
   snackbar: SnackbarInstance<any>;
@@ -19,6 +20,23 @@ const MAIN_VIEW_STYLE: ViewStyle = {
   left: 0,
 };
 
+const horizontalToFlexAlign = (
+  align: SnackbarConfig["horizontal"]
+): FlexAlignType => {
+  if (align === "stretch") return "stretch";
+  else if (align === "left") return "flex-start";
+  else if (align === "right") return "flex-end";
+  else return "center";
+};
+
+const verticalToFlexAlign = (
+  align: SnackbarConfig["vertical"]
+): ViewStyle["justifyContent"] => {
+  if (align === "top") return "flex-start";
+  else if (align === "bottom") return "flex-end";
+  else return "center";
+};
+
 export const SnackbarView = (props: GlobalBannerViewProps) => {
   const { snackbar, onFinished } = props;
 
@@ -31,7 +49,7 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
   );
 
   const insets = useSafeAreaInsets();
-  const mainStyle = useMemo(() => {
+  const mainStyle = useMemo<StyleProp<ViewStyle>>(() => {
     if (snackbar.config.insideSafeArea) {
       return [
         MAIN_VIEW_STYLE,
@@ -40,10 +58,18 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
           paddingBottom: insets.bottom,
           paddingStart: insets.left,
           paddingEnd: insets.right,
+          alignItems: horizontalToFlexAlign(config.horizontal),
+          justifyContent: verticalToFlexAlign(config.vertical),
         },
       ];
     } else {
-      return [MAIN_VIEW_STYLE];
+      return [
+        MAIN_VIEW_STYLE,
+        {
+          alignItems: horizontalToFlexAlign(config.horizontal),
+          justifyContent: verticalToFlexAlign(config.vertical),
+        },
+      ];
     }
   }, [insets]);
 

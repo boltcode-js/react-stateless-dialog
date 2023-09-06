@@ -65,12 +65,14 @@ export const useSnackbarSlideAnimation = (
     [offset, config.duration, onFinished]
   );
 
-  const animatedStyles = useAnimatedStyle(() => ({
-    transform: translateX
-      ? [{ translateX: offset.value }]
-      : [{ translateY: offset.value }],
-    opacity: offset.value === INITIAL_OFFSET ? 0 : 1,
-  }));
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      transform: translateX
+        ? [{ translateX: offset.value }]
+        : [{ translateY: offset.value }],
+      opacity: offset.value === INITIAL_OFFSET ? 0 : 1,
+    };
+  });
 
   return { animatedStyles, handleLayout };
 };
