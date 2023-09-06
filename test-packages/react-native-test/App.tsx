@@ -10,6 +10,7 @@ import type { PropsWithChildren } from 'react';
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View } from 'react-native';
 
 import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions } from 'react-native/Libraries/NewAppScreen';
+import { testSetup } from '@react-stateless-dialog/native/src';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -57,6 +58,7 @@ function App(): JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
+          <Section title={testSetup()}>Welcome</Section>
           <Section title="Step One">
             Edit <Text style={styles.highlight}>App.tsx</Text> to change this screen and then come back to see your edits.
           </Section>
