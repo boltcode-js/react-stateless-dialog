@@ -17,7 +17,13 @@ export type GlobalBannerViewProps = {
   onFinished: () => void;
 };
 
-const INITIAL_OFFSET = -100000;
+const MAIN_VIEW_STYLE: ViewStyle = {
+  position: "absolute",
+  top: 0,
+  bottom: 0,
+  right: 0,
+  left: 0,
+};
 
 export const SnackbarView = (props: GlobalBannerViewProps) => {
   const { snackbar, onFinished } = props;
@@ -80,12 +86,18 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
 
     return _style;
   }, []);*/
-  const { MAIN_VIEW_STYLE, handleLayout, animatedStyles } =
-    useSnackbarAnimation(config as SnackbarConfig, onFinished);
+  const { handleLayout, style } = useSnackbarAnimation(
+    config as SnackbarConfig,
+    onFinished
+  );
 
   return (
     <View style={MAIN_VIEW_STYLE} pointerEvents="box-none">
-      <Animated.View style={animatedStyles} onLayout={handleLayout}>
+      <Animated.View
+        style={style}
+        onLayout={handleLayout}
+        pointerEvents="box-none"
+      >
         <Component {...snackbar.context} />
       </Animated.View>
     </View>

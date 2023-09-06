@@ -20,7 +20,6 @@ export type SnackbarConfig = {
   animationType: "slide" | "fade" | "none";
 
   // TODO:
-  // containerStyle (margin...)
   // insideSafeArea: boolean
 };
 

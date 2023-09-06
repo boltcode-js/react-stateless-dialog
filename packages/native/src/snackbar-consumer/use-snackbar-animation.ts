@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Dimensions, LayoutChangeEvent, ViewStyle } from "react-native";
 import { SnackbarConfig } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config";
 import {
@@ -10,47 +10,38 @@ import {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
+
+const horizontalToFlexAlign = (
+  align: SnackbarConfig["horizontal"]
+): FlexAlignType => {
+  if (align === "left") return "flex-start";
+  else if (align === "right") return "flex-end";
+  else return "center";
+};
+
+const verticalToFlexAlign = (align: SnackbarConfig["vertical"]) => {
+  if (align === "top") return "flex-start";
+  else if (align === "bottom") return "flex-end";
+  else return "center";
+};
 
 export const useSnackbarAnimation = (
   config: SnackbarConfig,
   onFinished: () => void
 ): {
-  MAIN_VIEW_STYLE: ViewStyle;
-  animatedStyles: AnimatedStyle<ViewStyle>;
+  style: AnimatedStyle<ViewStyle>[];
   handleLayout: (event: LayoutChangeEvent) => void;
 } => {
-  const MAIN_VIEW_STYLE = useMemo<ViewStyle>(() => {
-    const _style: ViewStyle = {
-      position: "absolute",
-    };
-
-    if (config.vertical === "top") {
-      _style.top = 0; // TODO : SafeArea
-    } else if (config.vertical === "bottom") {
-      _style.bottom = 0; // TODO : SafeArea
-    } else {
-      // TODO
-    }
-
-    if (config.horizontal === "left") {
-      _style.left = 0; // TODO : SafeArea
-    } else if (config.horizontal === "right") {
-      _style.right = 0; // TODO : SafeArea
-    } else {
-      // TODO
-      _style.left = 0; // TODO : SafeArea
-      _style.right = 0; // TODO : SafeArea
-    }
-
-    return _style;
-  }, []);
+  const defaultStyle: AnimatedStyle<ViewStyle> = {
+    alignItems: horizontalToFlexAlign(config.horizontal),
+    justifyContent: verticalToFlexAlign(config.vertical),
+    flex: 1,
+  };
 
   if (config.animationType === "slide") {
-    // TODO
     const INITIAL_OFFSET = -100000;
     const offset = useSharedValue(INITIAL_OFFSET);
-
-    // config.vertical == 'center'
 
     const handleLayout = useCallback(
       (event: LayoutChangeEvent) => {
@@ -82,40 +73,54 @@ export const useSnackbarAnimation = (
     const animatedStyles = useAnimatedStyle(() => ({
       transform: [{ translateY: offset.value }],
       opacity: offset.value === INITIAL_OFFSET ? 0 : 1,
-      alignItems: "center",
-      // width: "100%",
     }));
 
-    return { MAIN_VIEW_STYLE, animatedStyles, handleLayout };
+    return { style: [defaultStyle, animatedStyles], handleLayout };
   } else if (config.animationType === "fade") {
     const opacity = useSharedValue(0);
 
-    const handleLayout = useCallback(
-      (event: LayoutChangeEvent) => {
-        function handleFinished(finished?: boolean) {
-          "worklet";
-          if (finished) {
-            runOnJS(onFinished)();
-          }
+    const handleLayout = useCallback(() => {
+      function handleFinished(finished?: boolean) {
+        "worklet";
+        if (finished) {
+          runOnJS(onFinished)();
         }
+      }
 
-        opacity.value = withSequence(
-          withTiming(1, { duration: 300 }),
-          withDelay(
-            config.duration,
-            withTiming(0, { duration: 300 }, handleFinished)
-          )
-        );
-      },
-      [opacity, config.duration, onFinished]
-    );
+      opacity.value = withSequence(
+        withTiming(1, { duration: 300 }),
+        withDelay(
+          config.duration,
+          withTiming(0, { duration: 300 }, handleFinished)
+        )
+      );
+    }, [opacity, config.duration, onFinished]);
 
     const animatedStyles = useAnimatedStyle(() => ({
       opacity: opacity.value,
-      width: "100%",
     }));
-    return { MAIN_VIEW_STYLE, animatedStyles, handleLayout };
+    return { style: [defaultStyle, animatedStyles], handleLayout };
   } else {
-    return { MAIN_VIEW_STYLE, animatedStyles: {}, handleLayout: undefined };
+    let timeout: NodeJS.Timeout;
+    const handleLayout = useCallback(() => {
+      timeout = setTimeout(() => {
+        onFinished();
+        timeout = undefined;
+      }, config.duration);
+    }, [config.duration, onFinished]);
+
+    useEffect(() => {
+      return () => {
+        if (timeout) {
+          clearTimeout(timeout);
+          timeout = undefined;
+        }
+      };
+    }, []);
+
+    return {
+      style: [defaultStyle],
+      handleLayout,
+    };
   }
 };
