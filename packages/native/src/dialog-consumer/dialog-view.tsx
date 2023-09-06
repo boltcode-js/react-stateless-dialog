@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React, { useEffect, useMemo, useRef } from "react";
 import Animated from "react-native-reanimated";
-import { useModalAnimation } from "./amimations/use-modal-animation";
+import { useModalAnimation } from "./animations/use-modal-animation";
 import { DialogConfig } from "@react-stateless-dialog/core/src/dialog-manager/models/dialog-config";
 
 export type DialogViewProps = DialogConfig & {

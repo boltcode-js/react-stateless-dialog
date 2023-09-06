@@ -19,8 +19,10 @@ export type SnackbarConfig = {
    */
   animationType: "slide" | "fade" | "none";
 
-  // TODO:
-  // insideSafeArea: boolean
+  /**
+   * If true, the snackbar will be contained inside the SafeArea
+   */
+  insideSafeArea: boolean;
 };
 
 export const SNACKBAR_DEFAULT_CONFIG: SnackbarConfig = {
@@ -28,4 +30,5 @@ export const SNACKBAR_DEFAULT_CONFIG: SnackbarConfig = {
   vertical: "top",
   horizontal: "center",
   animationType: "none",
+  insideSafeArea: false,
 };
