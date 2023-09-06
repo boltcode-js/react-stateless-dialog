@@ -28,5 +28,5 @@ export const BannerSnackbar: SnackbarComponent<{ message: string }> = (props) =>
 
 BannerSnackbar.insideSafeArea = false;
 BannerSnackbar.vertical = 'top';
-BannerSnackbar.horizontal = 'center';
+BannerSnackbar.horizontal = 'stretch';
 BannerSnackbar.animationType = 'slide';

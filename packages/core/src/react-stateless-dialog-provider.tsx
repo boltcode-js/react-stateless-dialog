@@ -6,9 +6,14 @@ import {
 import { deepMerge } from "./utils/utils";
 import { setPushMiddleware } from "./dialog-manager/dialog-manager";
 import { ProgressConfig } from "./progress-manager/models/progress-config";
+import {
+  SNACKBAR_DEFAULT_CONFIG,
+  SnackbarConfig,
+} from "./snackbar-manager/models/snackbar-config";
 
 export const ReactStatelessDialogContext = React.createContext<{
   defaultDialogConfig: DialogConfig;
+  defaultSnackbarConfig: SnackbarConfig;
   progressConfig: ProgressConfig;
 }>(undefined);
 
@@ -23,6 +28,7 @@ export type ReactStatelessDialogProviderProps = {
   ProgressConsumer: React.FunctionComponent;
 
   // Snackbar
+  defaultSnackbarConfig?: Partial<SnackbarConfig>;
   SnackbarConsumer: React.FunctionComponent;
 
   // Others
@@ -46,6 +52,11 @@ export const ReactStatelessDialogProvider = (
     [props.defaultDialogConfig]
   );
 
+  const defaultSnackbarConfig = useMemo(
+    () => deepMerge(SNACKBAR_DEFAULT_CONFIG, props.defaultSnackbarConfig),
+    [props.defaultSnackbarConfig]
+  );
+
   useEffect(() => {
     // TODO: We can probably find a better way to do this
     // Make native & web module add actions before a dialog is open
@@ -54,7 +65,7 @@ export const ReactStatelessDialogProvider = (
 
   return (
     <ReactStatelessDialogContext.Provider
-      value={{ defaultDialogConfig, progressConfig }}
+      value={{ defaultDialogConfig, progressConfig, defaultSnackbarConfig }}
     >
       {children}
       {/* IMPORTANT: We put consumers at the end to be in front of every other elements in the app */}

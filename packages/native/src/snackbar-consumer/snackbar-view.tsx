@@ -6,6 +6,8 @@ import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { SnackbarConfig } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
+import { useDialogConfig } from "@react-stateless-dialog/core/src/dialog-manager/use-dialog-config";
+import { useSnackbarConfig } from "@react-stateless-dialog/core/src/snackbar-manager/use-snackbar-config";
 
 export type GlobalBannerViewProps = {
   snackbar: SnackbarInstance<any>;
@@ -41,7 +43,7 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
   const { snackbar, onFinished } = props;
 
   const Component = snackbar.Component;
-  const config = snackbar.config;
+  const config = useSnackbarConfig(Component, snackbar.config);
 
   const { handleLayout, style } = useSnackbarAnimation(
     config as SnackbarConfig,
@@ -50,7 +52,7 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
 
   const insets = useSafeAreaInsets();
   const mainStyle = useMemo<StyleProp<ViewStyle>>(() => {
-    if (snackbar.config.insideSafeArea) {
+    if (config.insideSafeArea) {
       return [
         MAIN_VIEW_STYLE,
         {
@@ -80,7 +82,7 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
         onLayout={handleLayout}
         pointerEvents="box-none"
       >
-        <Component {...snackbar.context} />
+        <Component {...snackbar.context} config={config} />
       </Animated.View>
     </View>
   );

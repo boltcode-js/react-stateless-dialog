@@ -17,7 +17,7 @@ export const SnackbarManagerScreen = () => {
         <Button
           title="Banner Snackbar"
           onPress={() => {
-            SnackbarManager().push(BannerSnackbar, { message: 'Hello world' }, { duration: 2000, vertical, horizontal, animationType });
+            SnackbarManager().push(BannerSnackbar, { message: 'Hello world' });
           }}
         />
         <Button
