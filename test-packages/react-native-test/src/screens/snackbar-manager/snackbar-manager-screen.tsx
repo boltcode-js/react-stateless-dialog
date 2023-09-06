@@ -9,7 +9,7 @@ export const SnackbarManagerScreen = () => {
       <Button
         title="Snackbar"
         onPress={async () => {
-          SnackbarManager().push(BannerSnackbar, { message: 'Hello world' }, { duration: 2000, vertical: 'bottom' });
+          SnackbarManager().push(BannerSnackbar, { message: 'Hello world' }, { duration: 2000, vertical: 'top', horizontal: 'center', animationType: 'slide' });
         }}
       />
     </View>

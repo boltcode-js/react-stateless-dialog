@@ -9,6 +9,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SnackbarInstance } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-instance";
+import { useSnackbarAnimation } from "./use-snackbar-animation";
+import { SnackbarConfig } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config";
 
 export type GlobalBannerViewProps = {
   snackbar: SnackbarInstance<any>;
@@ -20,13 +22,13 @@ const INITIAL_OFFSET = -100000;
 export const SnackbarView = (props: GlobalBannerViewProps) => {
   const { snackbar, onFinished } = props;
 
-  const offset = useSharedValue(INITIAL_OFFSET);
-
   const Component = snackbar.Component;
   const config = snackbar.config;
-  const duration = config.duration;
 
-  const handleLayout = useCallback(
+  // const offset = useSharedValue(INITIAL_OFFSET);
+  // const duration = config.duration;
+
+  /*const handleLayout = useCallback(
     (event: LayoutChangeEvent) => {
       const height = event.nativeEvent.layout.height;
 
@@ -77,10 +79,12 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
     }
 
     return _style;
-  }, []);
+  }, []);*/
+  const { MAIN_VIEW_STYLE, handleLayout, animatedStyles } =
+    useSnackbarAnimation(config as SnackbarConfig, onFinished);
 
   return (
-    <View style={MAIN_VIEW_STYLE}>
+    <View style={MAIN_VIEW_STYLE} pointerEvents="box-none">
       <Animated.View style={animatedStyles} onLayout={handleLayout}>
         <Component {...snackbar.context} />
       </Animated.View>
