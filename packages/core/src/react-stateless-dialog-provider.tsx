@@ -22,6 +22,9 @@ export type ReactStatelessDialogProviderProps = {
   progressConfig: ProgressConfig;
   ProgressConsumer: React.FunctionComponent;
 
+  // Snackbar
+  SnackbarConsumer: React.FunctionComponent;
+
   // Others
   children: any;
 };
@@ -35,6 +38,7 @@ export const ReactStatelessDialogProvider = (
     pushDialogMiddleware,
     progressConfig,
     ProgressConsumer,
+    SnackbarConsumer,
   } = props;
 
   const defaultDialogConfig = useMemo(
@@ -56,6 +60,7 @@ export const ReactStatelessDialogProvider = (
       {/* IMPORTANT: We put consumers at the end to be in front of every other elements in the app */}
       <DialogConsumer />
       <ProgressConsumer />
+      <SnackbarConsumer />
     </ReactStatelessDialogContext.Provider>
   );
 };

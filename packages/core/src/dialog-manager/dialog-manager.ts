@@ -70,7 +70,6 @@ export const useDialogManager = create<DialogManagerState>((set, get) => ({
       Component: dialog,
       context: {
         args,
-        open: true,
         onConfirm: (result: Result) => {
           callInterceptor(result, interceptor).then((next) => {
             if (next) {

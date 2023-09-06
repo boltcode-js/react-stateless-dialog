@@ -10,6 +10,7 @@ export const HomeScreen = () => {
       <ScrollView>
         <View style={{ flex: 1 }}>
           <Button title="Dialog Manager" onPress={() => navigation.navigate('DialogManager')} />
+          <Button title="Snackbar Manager" onPress={() => navigation.navigate('SnackbarManager')} />
           <Button
             title="Progress"
             onPress={() => {

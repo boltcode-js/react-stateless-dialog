@@ -14,6 +14,7 @@ import { DialogConsumer } from '@react-stateless-dialog/native/src/dialog-consum
 import { Keyboard } from 'react-native';
 import { ProgressConsumer } from '@react-stateless-dialog/native/src/progress-consumer/progress-consumer';
 import { DefaultProgressComponent } from '@react-stateless-dialog/native/src/progress-consumer/default-progress-component';
+import { SnackbarConsumer } from '@react-stateless-dialog/native/src/snackbar-consumer/snackbar-consumer';
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
         DialogConsumer={DialogConsumer}
         pushDialogMiddleware={Keyboard.dismiss}
         progressConfig={{ Component: DefaultProgressComponent }}
-        ProgressConsumer={ProgressConsumer}>
+        ProgressConsumer={ProgressConsumer}
+        SnackbarConsumer={SnackbarConsumer}>
         <RootNavigator />
       </ReactStatelessDialogProvider>
     </SafeAreaProvider>

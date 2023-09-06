@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { HomeScreen } from '../screens/home-screen';
 import { DialogManagerScreen } from '../screens/dialog-manager/dialog-manager-screen';
 import { PlaygroundScreen } from '../screens/playground/playground-screen';
+import { SnackbarManagerScreen } from '../screens/snackbar-manager/snackbar-manager-screen';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ export const RootNavigator = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Playground" component={PlaygroundScreen} />
         <Stack.Screen name="DialogManager" component={DialogManagerScreen} />
+        <Stack.Screen name="SnackbarManager" component={SnackbarManagerScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
