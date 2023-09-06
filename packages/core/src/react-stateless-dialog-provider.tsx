@@ -5,22 +5,37 @@ import {
 } from "./dialog-manager/models/dialog-config";
 import { deepMerge } from "./utils/utils";
 import { setPushMiddleware } from "./dialog-manager/dialog-manager";
+import { ProgressConfig } from "./progress-manager/models/progress-config";
 
 export const ReactStatelessDialogContext = React.createContext<{
   defaultDialogConfig: DialogConfig;
+  progressConfig: ProgressConfig;
 }>(undefined);
 
 export type ReactStatelessDialogProviderProps = {
+  // Dialog
   defaultDialogConfig?: Partial<DialogConfig>;
-  DialogConsumer: any;
+  DialogConsumer: React.FunctionComponent;
   pushDialogMiddleware: () => void;
+
+  // Progress
+  progressConfig: ProgressConfig;
+  ProgressConsumer: React.FunctionComponent;
+
+  // Others
   children: any;
 };
 
 export const ReactStatelessDialogProvider = (
   props: ReactStatelessDialogProviderProps
 ) => {
-  const { children, DialogConsumer, pushDialogMiddleware } = props;
+  const {
+    children,
+    DialogConsumer,
+    pushDialogMiddleware,
+    progressConfig,
+    ProgressConsumer,
+  } = props;
 
   const defaultDialogConfig = useMemo(
     () => deepMerge(DIALOG_DEFAULT_CONFIG, props.defaultDialogConfig),
@@ -34,10 +49,13 @@ export const ReactStatelessDialogProvider = (
   });
 
   return (
-    <ReactStatelessDialogContext.Provider value={{ defaultDialogConfig }}>
+    <ReactStatelessDialogContext.Provider
+      value={{ defaultDialogConfig, progressConfig }}
+    >
       {children}
       {/* IMPORTANT: We put consumers at the end to be in front of every other elements in the app */}
       <DialogConsumer />
+      <ProgressConsumer />
     </ReactStatelessDialogContext.Provider>
   );
 };

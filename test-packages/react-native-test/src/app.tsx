@@ -12,11 +12,17 @@ import { ReactStatelessDialogProvider } from '@react-stateless-dialog/core/src/r
 import { RootNavigator } from './navigation/root-navigator';
 import { DialogConsumer } from '@react-stateless-dialog/native/src/dialog-consumer/dialog-consumer';
 import { Keyboard } from 'react-native';
+import { ProgressConsumer } from '@react-stateless-dialog/native/src/progress-consumer/progress-consumer';
+import { DefaultProgressComponent } from '@react-stateless-dialog/native/src/progress-consumer/default-progress-component';
 
 function App() {
   return (
     <SafeAreaProvider>
-      <ReactStatelessDialogProvider DialogConsumer={DialogConsumer} pushDialogMiddleware={Keyboard.dismiss}>
+      <ReactStatelessDialogProvider
+        DialogConsumer={DialogConsumer}
+        pushDialogMiddleware={Keyboard.dismiss}
+        progressConfig={{ Component: DefaultProgressComponent }}
+        ProgressConsumer={ProgressConsumer}>
         <RootNavigator />
       </ReactStatelessDialogProvider>
     </SafeAreaProvider>

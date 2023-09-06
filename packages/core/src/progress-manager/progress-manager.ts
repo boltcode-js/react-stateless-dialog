@@ -4,7 +4,7 @@ export interface IProgressManager {
   isLoading: boolean;
   setLoading: (isLoading: boolean, message?: string) => void;
   show: (message?: string) => void;
-  hide: (message?: string) => void;
+  hide: () => void;
 }
 
 export interface ProgressManagerState extends IProgressManager {
