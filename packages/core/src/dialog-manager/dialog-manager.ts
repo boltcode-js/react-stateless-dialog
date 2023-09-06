@@ -34,6 +34,11 @@ const callInterceptor = async <T extends any>(
   }
 };
 
+let pushMiddleware: () => void;
+export const setPushMiddleware = (middleware: () => void) => {
+  pushMiddleware = middleware;
+};
+
 export const useDialogManager = create<DialogManagerState>((set, get) => ({
   nextId: 1,
   dialogs: [],
@@ -98,6 +103,10 @@ export const useDialogManager = create<DialogManagerState>((set, get) => ({
       interceptor = _i;
       return handler;
     };
+
+    if (pushMiddleware) {
+      pushMiddleware();
+    }
 
     set((state) => ({
       nextId: dialogId + 1,
