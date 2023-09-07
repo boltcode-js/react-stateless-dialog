@@ -1,5 +1,5 @@
 import { useContext, useMemo } from "react";
-import { ReactStatelessDialogContext } from "../react-stateless-dialog-provider";
+import { ReactStatelessDialogContext } from "../stateless-dialog-provider";
 import { deepMerge } from "../utils/utils";
 import { SnackbarConfig } from "./models/snackbar-config";
 import { SnackbarComponent } from "./models/snackbar-component";

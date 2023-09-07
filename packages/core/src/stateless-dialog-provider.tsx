@@ -41,7 +41,7 @@ export type ReactStatelessDialogProviderProps = {
   children: any;
 };
 
-export const ReactStatelessDialogProvider = (
+export const StatelessDialogProvider = (
   props: ReactStatelessDialogProviderProps
 ) => {
   const {

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { View, ViewStyle } from "react-native";
 import { useProgressManager } from "@react-stateless-dialog/core/src/progress-manager/progress-manager";
-import { ReactStatelessDialogContext } from "@react-stateless-dialog/core/src/react-stateless-dialog-provider";
+import { ReactStatelessDialogContext } from "packages/core/src/stateless-dialog-provider";
 
 const MAIN_VIEW_STYLE: ViewStyle = {
   position: "absolute",

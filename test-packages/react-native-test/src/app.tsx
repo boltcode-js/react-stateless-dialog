@@ -8,7 +8,7 @@
 import React from 'react';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ReactStatelessDialogProvider } from '@react-stateless-dialog/core/src/react-stateless-dialog-provider';
+import { StatelessDialogProvider } from 'packages/core/src/stateless-dialog-provider';
 import { RootNavigator } from './navigation/root-navigator';
 import { DialogConsumer } from '@react-stateless-dialog/native/src/dialog-consumer/dialog-consumer';
 import { Keyboard } from 'react-native';
@@ -20,7 +20,7 @@ import { DefaultSnackbar } from '@react-stateless-dialog/native/src/snackbar-con
 function App() {
   return (
     <SafeAreaProvider>
-      <ReactStatelessDialogProvider
+      <StatelessDialogProvider
         DialogConsumer={DialogConsumer}
         pushDialogMiddleware={Keyboard.dismiss}
         progressConfig={{ Component: DefaultProgressComponent }}
@@ -28,7 +28,7 @@ function App() {
         SnackbarConsumer={SnackbarConsumer}
         DefaultSnackbar={DefaultSnackbar}>
         <RootNavigator />
-      </ReactStatelessDialogProvider>
+      </StatelessDialogProvider>
     </SafeAreaProvider>
   );
 }

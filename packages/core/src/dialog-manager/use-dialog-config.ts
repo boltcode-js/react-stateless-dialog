@@ -1,7 +1,7 @@
 import { DialogComponent } from "./models/dialog-component";
 import { DialogConfig } from "./models/dialog-config";
 import { useContext, useMemo } from "react";
-import { ReactStatelessDialogContext } from "../react-stateless-dialog-provider";
+import { ReactStatelessDialogContext } from "../stateless-dialog-provider";
 import { deepMerge } from "../utils/utils";
 
 export const useDialogConfig = (
