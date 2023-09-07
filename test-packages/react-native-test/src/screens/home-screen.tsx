@@ -12,9 +12,16 @@ export const HomeScreen = () => {
           <Button title="Dialog Manager" onPress={() => navigation.navigate('DialogManager')} />
           <Button title="Snackbar Manager" onPress={() => navigation.navigate('SnackbarManager')} />
           <Button
-            title="Progress"
+            title="Progress (with text)"
             onPress={() => {
               ProgressManager().show('Hello world !');
+              setTimeout(() => ProgressManager().hide(), 2000);
+            }}
+          />
+          <Button
+            title="Progress"
+            onPress={() => {
+              ProgressManager().show();
               setTimeout(() => ProgressManager().hide(), 2000);
             }}
           />

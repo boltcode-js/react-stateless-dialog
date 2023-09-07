@@ -9,3 +9,11 @@ export interface SnackbarComponent<Args extends any>
   extends Partial<SnackbarConfig> {
   (props: SnackbarContext<Args>): React.JSX.Element;
 }
+
+/**
+ * SnackbarProps used for default Snackbar
+ */
+export interface DefaultSnackbarProps {
+  message: string;
+  type: "info" | "success" | "warn" | "error";
+}

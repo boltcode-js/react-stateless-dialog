@@ -15,6 +15,30 @@ export const SnackbarManagerScreen = () => {
     <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <View style={{ flex: 1 }}>
         <Button
+          title="Default Snackbar (info)"
+          onPress={() => {
+            SnackbarManager().pushDefault('info', 'Info message');
+          }}
+        />
+        <Button
+          title="Default Snackbar (success)"
+          onPress={() => {
+            SnackbarManager().pushDefault('success', 'Success message');
+          }}
+        />
+        <Button
+          title="Default Snackbar (warn)"
+          onPress={() => {
+            SnackbarManager().pushDefault('warn', 'Warn message');
+          }}
+        />
+        <Button
+          title="Default Snackbar (error)"
+          onPress={() => {
+            SnackbarManager().pushDefault('error', 'Error message');
+          }}
+        />
+        <Button
           title="Banner Snackbar"
           onPress={() => {
             SnackbarManager().push(BannerSnackbar, { message: 'Hello world' });

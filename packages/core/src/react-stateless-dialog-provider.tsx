@@ -10,6 +10,11 @@ import {
   SNACKBAR_DEFAULT_CONFIG,
   SnackbarConfig,
 } from "./snackbar-manager/models/snackbar-config";
+import { setDefaultSnackbar } from "./snackbar-manager/snackbar-manager";
+import {
+  DefaultSnackbarProps,
+  SnackbarComponent,
+} from "./snackbar-manager/models/snackbar-component";
 
 export const ReactStatelessDialogContext = React.createContext<{
   defaultDialogConfig: DialogConfig;
@@ -30,6 +35,7 @@ export type ReactStatelessDialogProviderProps = {
   // Snackbar
   defaultSnackbarConfig?: Partial<SnackbarConfig>;
   SnackbarConsumer: React.FunctionComponent;
+  DefaultSnackbar: SnackbarComponent<DefaultSnackbarProps>;
 
   // Others
   children: any;
@@ -45,6 +51,7 @@ export const ReactStatelessDialogProvider = (
     progressConfig,
     ProgressConsumer,
     SnackbarConsumer,
+    DefaultSnackbar,
   } = props;
 
   const defaultDialogConfig = useMemo(
@@ -61,6 +68,7 @@ export const ReactStatelessDialogProvider = (
     // TODO: We can probably find a better way to do this
     // Make native & web module add actions before a dialog is open
     setPushMiddleware(pushDialogMiddleware);
+    setDefaultSnackbar(DefaultSnackbar);
   });
 
   return (
