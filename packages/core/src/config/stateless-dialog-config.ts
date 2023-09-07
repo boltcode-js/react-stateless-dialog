@@ -1,12 +1,12 @@
 import { DialogConfig } from "../dialog-manager/models/dialog-config";
 import React from "react";
-import { ProgressConfig } from "../progress-manager/models/progress-config";
 import { SnackbarConfig } from "../snackbar-manager/models/snackbar-config";
 import {
   DefaultSnackbarProps,
   SnackbarComponent,
 } from "../snackbar-manager/models/snackbar-component";
 import { deepMerge, DeepPartial } from "../utils/utils";
+import { ProgressComponent } from "../progress-manager/models/progress-component";
 
 export type StatelessDialogConfig = {
   dialog: {
@@ -22,7 +22,7 @@ export type StatelessDialogConfig = {
   };
 
   progress: {
-    config: ProgressConfig;
+    Component: ProgressComponent;
     Consumer: React.FunctionComponent;
   };
 };

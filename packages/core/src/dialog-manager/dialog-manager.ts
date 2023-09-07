@@ -3,6 +3,8 @@ import { DialogComponent } from "./models/dialog-component";
 import { DialogHandler } from "./models/dialog-handler";
 import { DialogInstance } from "./models/dialog-instance";
 import { create } from "zustand";
+import { deepMerge } from "../utils/utils";
+import { getGlobalConfig } from "../config/global-config";
 
 export interface IDialogManager {
   push: <Args extends any, Result extends any>(
@@ -34,11 +36,6 @@ const callInterceptor = async <T extends any>(
   }
 };
 
-let pushMiddleware: () => void;
-export const setPushMiddleware = (middleware: () => void) => {
-  pushMiddleware = middleware;
-};
-
 export const useDialogManager = create<DialogManagerState>((set, get) => ({
   nextId: 1,
   dialogs: [],
@@ -51,8 +48,15 @@ export const useDialogManager = create<DialogManagerState>((set, get) => ({
   push<Args extends any, Result extends any>(
     dialog: DialogComponent<Args, Result>,
     args: Args,
-    config?: Partial<DialogConfig>
+    partialConfig?: Partial<DialogConfig>
   ) {
+    const config: DialogConfig = deepMerge(
+      {},
+      getGlobalConfig().dialog.defaultConfig,
+      dialog,
+      partialConfig
+    );
+
     const closeDialog = (id: number) =>
       set((state) => ({ dialogs: state.dialogs.filter((x) => x.id !== id) }));
     const dialogId = get().nextId;
@@ -103,6 +107,7 @@ export const useDialogManager = create<DialogManagerState>((set, get) => ({
       return handler;
     };
 
+    const pushMiddleware = getGlobalConfig().dialog.pushDialogMiddleware;
     if (pushMiddleware) {
       pushMiddleware();
     }

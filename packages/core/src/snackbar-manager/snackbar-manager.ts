@@ -5,6 +5,8 @@ import {
 } from "./models/snackbar-component";
 import { SnackbarConfig } from "./models/snackbar-config";
 import { SnackbarInstance } from "./models/snackbar-instance";
+import { deepMerge } from "../utils/utils";
+import { getGlobalConfig } from "../config/global-config";
 
 export interface ISnackbarManager {
   push: <Args extends any>(
@@ -25,19 +27,19 @@ export interface ISnackbarManagerState extends ISnackbarManager {
   destroyFirst: () => void;
 }
 
-let defaultSnackbar: SnackbarComponent<DefaultSnackbarProps>;
-export const setDefaultSnackbar = (
-  snackbar: SnackbarComponent<DefaultSnackbarProps>
-) => {
-  defaultSnackbar = snackbar;
-};
-
 export const useSnackbarManager = create<ISnackbarManagerState>((set, get) => {
   const push = <Args extends any>(
     snackbar: SnackbarComponent<Args>,
     args: Args,
-    config?: Partial<SnackbarConfig>
+    partialConfig?: Partial<SnackbarConfig>
   ) => {
+    const config = deepMerge(
+      {},
+      getGlobalConfig().snackbar.defaultConfig,
+      snackbar,
+      partialConfig
+    );
+
     const snackbarId = get().nextId;
 
     const closeSnackbar = (id: number) => {
@@ -74,7 +76,11 @@ export const useSnackbarManager = create<ISnackbarManagerState>((set, get) => {
       message: string,
       config?: Partial<SnackbarConfig>
     ) => {
-      push(defaultSnackbar, { type, message }, config);
+      push(
+        getGlobalConfig().snackbar.DefaultSnackbar,
+        { type, message },
+        config
+      );
     },
     destroyFirst: () => {
       if (get().snackbars.length > 0) {

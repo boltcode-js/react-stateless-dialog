@@ -6,7 +6,6 @@ import {
   useWindowDimensions,
   ViewStyle,
 } from "react-native";
-import { DialogViewProps } from "../dialog-view";
 import { DialogConfig } from "@react-stateless-dialog/core/src/dialog-manager/models/dialog-config";
 import {
   useAnimatedStyle,
@@ -29,7 +28,7 @@ const MAIN_VIEW_STYLE: ViewStyle = {
 };
 
 export const useModalAnimation = (
-  animationType: DialogViewProps["animationType"],
+  animationType: DialogConfig["animationType"],
   keyboardBehavior: DialogConfig["keyboardBehavior"]
 ) => {
   const ref = useRef(animationType);

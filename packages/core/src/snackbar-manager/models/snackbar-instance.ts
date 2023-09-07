@@ -9,5 +9,5 @@ export type SnackbarInstance<Args extends any> = {
   id: number;
   Component: SnackbarComponent<Args>;
   context: SnackbarContext<Args>;
-  config?: Partial<SnackbarConfig>;
+  config?: SnackbarConfig;
 };

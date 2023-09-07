@@ -1,85 +1,56 @@
-import React, { useEffect, useMemo } from "react";
-import {
-  DIALOG_DEFAULT_CONFIG,
-  DialogConfig,
-} from "./dialog-manager/models/dialog-config";
-import { deepMerge } from "./utils/utils";
-import { setPushMiddleware } from "./dialog-manager/dialog-manager";
-import { ProgressConfig } from "./progress-manager/models/progress-config";
-import {
-  SNACKBAR_DEFAULT_CONFIG,
-  SnackbarConfig,
-} from "./snackbar-manager/models/snackbar-config";
-import { setDefaultSnackbar } from "./snackbar-manager/snackbar-manager";
-import {
-  DefaultSnackbarProps,
-  SnackbarComponent,
-} from "./snackbar-manager/models/snackbar-component";
+import React, { useEffect, useRef } from "react";
+import { DIALOG_DEFAULT_CONFIG } from "./dialog-manager/models/dialog-config";
+import { deepMerge, DeepPartial } from "./utils/utils";
+import { SNACKBAR_DEFAULT_CONFIG } from "./snackbar-manager/models/snackbar-config";
+import { StatelessDialogConfig } from "./config/stateless-dialog-config";
+import { setGlobalConfig } from "./config/global-config";
 
-export const ReactStatelessDialogContext = React.createContext<{
-  defaultDialogConfig: DialogConfig;
-  defaultSnackbarConfig: SnackbarConfig;
-  progressConfig: ProgressConfig;
-}>(undefined);
-
-export type ReactStatelessDialogProviderProps = {
-  // Dialog
-  defaultDialogConfig?: Partial<DialogConfig>;
-  DialogConsumer: React.FunctionComponent;
-  pushDialogMiddleware: () => void;
-
-  // Progress
-  progressConfig: ProgressConfig;
-  ProgressConsumer: React.FunctionComponent;
-
-  // Snackbar
-  defaultSnackbarConfig?: Partial<SnackbarConfig>;
-  SnackbarConsumer: React.FunctionComponent;
-  DefaultSnackbar: SnackbarComponent<DefaultSnackbarProps>;
-
-  // Others
+export type StatelessDialogProviderProps = {
+  config: StatelessDialogConfig;
   children: any;
 };
 
 export const StatelessDialogProvider = (
-  props: ReactStatelessDialogProviderProps
+  props: StatelessDialogProviderProps
 ) => {
-  const {
-    children,
-    DialogConsumer,
-    pushDialogMiddleware,
-    progressConfig,
-    ProgressConsumer,
-    SnackbarConsumer,
-    DefaultSnackbar,
-  } = props;
+  const { children, config } = props;
 
-  const defaultDialogConfig = useMemo(
-    () => deepMerge(DIALOG_DEFAULT_CONFIG, props.defaultDialogConfig),
-    [props.defaultDialogConfig]
-  );
-
-  const defaultSnackbarConfig = useMemo(
-    () => deepMerge(SNACKBAR_DEFAULT_CONFIG, props.defaultSnackbarConfig),
-    [props.defaultSnackbarConfig]
-  );
+  const configRef = useRef(config);
+  if (configRef.current !== config) {
+    throw new Error(
+      "StatelessDialogProvider error: config should be immutable"
+    );
+  }
 
   useEffect(() => {
-    // TODO: We can probably find a better way to do this
-    // Make native & web module add actions before a dialog is open
-    setPushMiddleware(pushDialogMiddleware);
-    setDefaultSnackbar(DefaultSnackbar);
-  });
+    const effectiveConfig = deepMerge({}, config, {
+      dialog: {
+        defaultConfig: deepMerge(
+          DIALOG_DEFAULT_CONFIG,
+          config.dialog?.defaultConfig || {}
+        ),
+      },
+      snackbar: {
+        defaultConfig: deepMerge(
+          SNACKBAR_DEFAULT_CONFIG,
+          config.snackbar?.defaultConfig || {}
+        ),
+      },
+    } as DeepPartial<StatelessDialogConfig>);
+    setGlobalConfig(effectiveConfig);
+  }, []);
+
+  const DialogConsumer = config.dialog.Consumer;
+  const ProgressConsumer = config.progress.Consumer;
+  const SnackbarConsumer = config.snackbar.Consumer;
 
   return (
-    <ReactStatelessDialogContext.Provider
-      value={{ defaultDialogConfig, progressConfig, defaultSnackbarConfig }}
-    >
+    <>
       {children}
       {/* IMPORTANT: We put consumers at the end to be in front of every other elements in the app */}
       <DialogConsumer />
       <ProgressConsumer />
       <SnackbarConsumer />
-    </ReactStatelessDialogContext.Provider>
+    </>
   );
 };

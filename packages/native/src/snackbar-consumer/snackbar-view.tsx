@@ -1,13 +1,11 @@
 import React, { useMemo } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
-import Animated, { AnimatedStyle } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { SnackbarInstance } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-instance";
 import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { SnackbarConfig } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
-import { useDialogConfig } from "@react-stateless-dialog/core/src/dialog-manager/use-dialog-config";
-import { useSnackbarConfig } from "@react-stateless-dialog/core/src/snackbar-manager/use-snackbar-config";
 
 export type GlobalBannerViewProps = {
   snackbar: SnackbarInstance<any>;
@@ -43,12 +41,9 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
   const { snackbar, onFinished } = props;
 
   const Component = snackbar.Component;
-  const config = useSnackbarConfig(Component, snackbar.config);
+  const config = snackbar.config;
 
-  const { handleLayout, style } = useSnackbarAnimation(
-    config as SnackbarConfig,
-    onFinished
-  );
+  const { handleLayout, style } = useSnackbarAnimation(config, onFinished);
 
   const insets = useSafeAreaInsets();
   const mainStyle = useMemo<StyleProp<ViewStyle>>(() => {

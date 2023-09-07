@@ -10,7 +10,8 @@ import Animated from "react-native-reanimated";
 import { useModalAnimation } from "./animations/use-modal-animation";
 import { DialogConfig } from "@react-stateless-dialog/core/src/dialog-manager/models/dialog-config";
 
-export type DialogViewProps = DialogConfig & {
+export type DialogViewProps = {
+  config: DialogConfig;
   onCancel: () => void;
   children: any;
 };
@@ -60,15 +61,14 @@ const useCancelOnBackButton = (
 };
 
 export const DialogView = (props: DialogViewProps) => {
+  const { onCancel, config, children } = props;
   const {
     backgroundColor,
     animationType,
-    onCancel,
     quitOnTouchOutside,
     androidCancelOnClickBack,
     keyboardBehavior,
-    children,
-  } = props;
+  } = config;
 
   const outsideViewStyle = useMemo(
     () => [OUTSIDE_VIEW_STYLE, { backgroundColor }],

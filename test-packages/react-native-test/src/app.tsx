@@ -8,25 +8,17 @@
 import React from 'react';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StatelessDialogProvider } from 'packages/core/src/stateless-dialog-provider';
 import { RootNavigator } from './navigation/root-navigator';
-import { DialogConsumer } from '@react-stateless-dialog/native/src/dialog-consumer/dialog-consumer';
-import { Keyboard } from 'react-native';
-import { ProgressConsumer } from '@react-stateless-dialog/native/src/progress-consumer/progress-consumer';
-import { DefaultProgressComponent } from '@react-stateless-dialog/native/src/progress-consumer/default-progress-component';
-import { SnackbarConsumer } from '@react-stateless-dialog/native/src/snackbar-consumer/snackbar-consumer';
-import { DefaultSnackbar } from '@react-stateless-dialog/native/src/snackbar-consumer/default-snackbar';
+import { overrideStatelessDialogConfig, StatelessDialogConfig } from '@react-stateless-dialog/core/src/config/stateless-dialog-config';
+import { StatelessDialogConfigNative } from '@react-stateless-dialog/native/src/native-config';
+import { StatelessDialogProvider } from '@react-stateless-dialog/core/src/stateless-dialog-provider';
+
+const statelessDialogConfig: StatelessDialogConfig = overrideStatelessDialogConfig(StatelessDialogConfigNative, {});
 
 function App() {
   return (
     <SafeAreaProvider>
-      <StatelessDialogProvider
-        DialogConsumer={DialogConsumer}
-        pushDialogMiddleware={Keyboard.dismiss}
-        progressConfig={{ Component: DefaultProgressComponent }}
-        ProgressConsumer={ProgressConsumer}
-        SnackbarConsumer={SnackbarConsumer}
-        DefaultSnackbar={DefaultSnackbar}>
+      <StatelessDialogProvider config={statelessDialogConfig}>
         <RootNavigator />
       </StatelessDialogProvider>
     </SafeAreaProvider>

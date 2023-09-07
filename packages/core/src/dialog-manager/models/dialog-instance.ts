@@ -9,6 +9,6 @@ export type DialogInstance<Args extends any, Result extends any> = {
   id: number;
   Component: DialogComponent<Args, Result>;
   context: DialogContext<Args, Result>;
-  config?: Partial<DialogConfig>;
+  config?: DialogConfig;
   interceptor?: (result: Result) => boolean | Promise<boolean>;
 };
