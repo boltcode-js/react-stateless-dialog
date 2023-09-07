@@ -5,11 +5,13 @@
     "directory": "packages/core",
     "type": "git"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "files": ["lib/**/*"],
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "build": "tsc --project ./tsconfig.json",
     "clean": "rm -rf lib",
