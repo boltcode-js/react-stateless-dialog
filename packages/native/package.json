@@ -5,11 +5,13 @@
     "directory": "packages/native",
     "type": "git"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "files": ["lib/**/*"],
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "build": "tsc --project ./tsconfig.json",
     "clean": "rm -rf lib",
@@ -23,7 +25,7 @@
     "react-native-safe-area-context": "^4.7.2"
   },
   "dependencies": {
-    "@react-stateless-dialog/core": "0.1.0"
+    "@react-stateless-dialog/core": "0.1.1"
   },
   "devDependencies": {
     "typescript": "4.8.4"
