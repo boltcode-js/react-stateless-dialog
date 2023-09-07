@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
-import { SnackbarInstance } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-instance";
+import { SnackbarInstance } from "@react-stateless-dialog/core/lib/snackbar-manager/models/snackbar-instance";
 import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
-import { SnackbarConfig } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config";
+import { SnackbarConfig } from "@react-stateless-dialog/core/lib/snackbar-manager/models/snackbar-config";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 

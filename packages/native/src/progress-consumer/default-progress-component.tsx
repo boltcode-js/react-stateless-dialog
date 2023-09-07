@@ -1,5 +1,5 @@
 import { ActivityIndicator, Text, View, ViewStyle } from "react-native";
-import { ProgressComponent } from "@react-stateless-dialog/core/src/progress-manager/models/progress-component";
+import { ProgressComponent } from "@react-stateless-dialog/core/lib/progress-manager/models/progress-component";
 
 const VIEW_STYLE: ViewStyle = {
   backgroundColor: "#a0a0a0",

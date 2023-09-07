@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Text, View } from 'react-native';
-import { SnackbarComponent } from '@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-component';
+import { SnackbarComponent } from '@react-stateless-dialog/core';
 
 export const ToastSnackbar: SnackbarComponent<{ message: string }> = (props) => {
   const { args, onClose } = props;

@@ -6,7 +6,7 @@ import {
   useWindowDimensions,
   ViewStyle,
 } from "react-native";
-import { DialogConfig } from "@react-stateless-dialog/core/src/dialog-manager/models/dialog-config";
+import { DialogConfig } from "@react-stateless-dialog/core/lib/dialog-manager/models/dialog-config";
 import {
   useAnimatedStyle,
   useSharedValue,

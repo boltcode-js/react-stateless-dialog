@@ -1,5 +1,5 @@
 import { LayoutChangeEvent, ViewStyle } from "react-native";
-import { SnackbarConfig } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config";
+import { SnackbarConfig } from "@react-stateless-dialog/core/lib/snackbar-manager/models/snackbar-config";
 import { AnimatedStyle } from "react-native-reanimated";
 import { useSnackbarSlideAnimation } from "./use-snackbar-slide-animation";
 import { useSnackbarFadeAnimation } from "./use-snackbar-fade-animation";

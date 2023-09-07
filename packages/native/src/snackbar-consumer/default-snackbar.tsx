@@ -3,9 +3,9 @@ import { Text, TextStyle, View, ViewStyle } from "react-native";
 import {
   DefaultSnackbarProps,
   SnackbarComponent,
-} from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-component";
+} from "@react-stateless-dialog/core/lib/snackbar-manager/models/snackbar-component";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { invertColor } from "@react-stateless-dialog/core/src/utils/utils";
+import { invertColor } from "@react-stateless-dialog/core/lib/utils/utils";
 
 const DEFAULT_SNACKBAR_CONFIG = {
   bgColors: {

@@ -53,7 +53,7 @@ export const useSnackbarManager = create<ISnackbarManagerState>((set, get) => {
       Component: snackbar,
       context: {
         args,
-        config: config as SnackbarConfig, // TODO: Merge config here
+        config,
         onClose: () => {
           closeSnackbar(snackbarId);
         },

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Button, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
-import { SnackbarManager } from '@react-stateless-dialog/core/src';
+import { SnackbarManager, SnackbarConfig } from '@react-stateless-dialog/core';
 import { BannerSnackbar } from './snackbars/banner-snackbar';
 import CheckBox from '@react-native-community/checkbox';
-import { SnackbarConfig } from '@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config';
 import { ToastSnackbar } from './snackbars/toast-snackbar';
 
 export const SnackbarManagerScreen = () => {

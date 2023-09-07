@@ -1,7 +1,7 @@
 import React from "react";
 import { View, ViewStyle } from "react-native";
-import { useProgressManager } from "@react-stateless-dialog/core/src/progress-manager/progress-manager";
-import { getGlobalConfig } from "@react-stateless-dialog/core/src/config/global-config";
+import { useProgressManager } from "@react-stateless-dialog/core/lib/progress-manager/progress-manager";
+import { getGlobalConfig } from "@react-stateless-dialog/core/lib/config/global-config";
 
 const MAIN_VIEW_STYLE: ViewStyle = {
   position: "absolute",

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Text, View } from 'react-native';
-import { DialogContext } from '@react-stateless-dialog/core/src';
+import { DialogContext } from '@react-stateless-dialog/core';
 
 export const ConfirmDialog = (props: DialogContext<{ message: string }, boolean>) => {
   const { args, onConfirm, onCancel } = props;

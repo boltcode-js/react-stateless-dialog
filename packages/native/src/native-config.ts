@@ -1,8 +1,8 @@
-import { StatelessDialogConfig } from "@react-stateless-dialog/core/src/config/stateless-dialog-config";
-import { DIALOG_DEFAULT_CONFIG } from "@react-stateless-dialog/core/src/dialog-manager/models/dialog-config";
+import { StatelessDialogConfig } from "@react-stateless-dialog/core/lib/config/stateless-dialog-config";
+import { DIALOG_DEFAULT_CONFIG } from "@react-stateless-dialog/core/lib/dialog-manager/models/dialog-config";
 import { Keyboard } from "react-native";
 import { DialogConsumer } from "./dialog-consumer/dialog-consumer";
-import { SNACKBAR_DEFAULT_CONFIG } from "@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-config";
+import { SNACKBAR_DEFAULT_CONFIG } from "@react-stateless-dialog/core/lib/snackbar-manager/models/snackbar-config";
 import { SnackbarConsumer } from "./snackbar-consumer/snackbar-consumer";
 import { DefaultSnackbar } from "./snackbar-consumer/default-snackbar";
 import { ProgressConsumer } from "./progress-consumer/progress-consumer";

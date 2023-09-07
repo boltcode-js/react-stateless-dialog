@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import { Text, TextStyle, View, ViewStyle } from 'react-native';
-import { DefaultSnackbarProps, SnackbarComponent } from '@react-stateless-dialog/core/src/snackbar-manager/models/snackbar-component';
+import { DefaultSnackbarProps, SnackbarComponent, invertColor } from '@react-stateless-dialog/core';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { invertColor } from '@react-stateless-dialog/core/src/utils/utils';
 
 const DEFAULT_SNACKBAR_CONFIG = {
   bgColors: {

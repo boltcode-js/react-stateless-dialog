@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, SafeAreaView, ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ProgressManager } from '@react-stateless-dialog/core/src';
+import { ProgressManager } from '@react-stateless-dialog/core';
 
 export const HomeScreen = () => {
   const navigation = useNavigation<any>();

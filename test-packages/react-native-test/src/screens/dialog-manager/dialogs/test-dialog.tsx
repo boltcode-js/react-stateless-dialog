@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Button, Text, View } from 'react-native';
-import { DialogContext } from '@react-stateless-dialog/core/src';
+import { DialogContext } from '@react-stateless-dialog/core';
 
 export const TestDialog = (props: DialogContext<null, null>) => {
   const handleOpenDialog = useCallback(async () => {

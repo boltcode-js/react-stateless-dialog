@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, View } from 'react-native';
-import { DialogManager } from '@react-stateless-dialog/core/src';
+import { DialogManager } from '@react-stateless-dialog/core';
 import { ConfirmDialog } from './dialogs/confirm-dialog';
 import { KeyboardDialog } from './dialogs/keyboard-dialog';
 

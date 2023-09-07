@@ -1,8 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { FlatList, ListRenderItemInfo, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { DialogManager } from '@react-stateless-dialog/core/src';
+import { DialogManager, DialogComponent } from '@react-stateless-dialog/core';
 import { ConfirmDialog } from './confirm-dialog';
-import { DialogComponent } from '@react-stateless-dialog/core/src/dialog-manager/models/dialog-component';
 
 export const KeyboardDialog: DialogComponent<null, null> = (_uProps) => {
   const data = useMemo(() => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { DialogView } from "./dialog-view";
-import { useDialogManager } from "@react-stateless-dialog/core/src/dialog-manager/dialog-manager";
-import { DialogInstance } from "@react-stateless-dialog/core/src/dialog-manager/models/dialog-instance";
+import { useDialogManager } from "@react-stateless-dialog/core/lib/dialog-manager/dialog-manager";
+import { DialogInstance } from "@react-stateless-dialog/core/lib/dialog-manager/models/dialog-instance";
 
 const ShowModal = (props: { dial: DialogInstance<any, any> }) => {
   const { dial } = props;
