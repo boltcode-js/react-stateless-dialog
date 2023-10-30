@@ -6,7 +6,8 @@
     "strictNullChecks": false,
     "noEmit": false,
     "declaration": true,
-    "types": ["react-native", "jest", "node"]
+    "types": ["react-native", "jest", "node"],
+    "jsx": "preserve"
   },
   "include": ["src"]
 }
