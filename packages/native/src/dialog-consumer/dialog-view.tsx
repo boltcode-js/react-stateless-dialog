@@ -68,13 +68,18 @@ export const DialogView = (props: DialogViewProps) => {
     quitOnTouchOutside,
     androidCancelOnClickBack,
     keyboardBehavior,
+    disableSafeArea,
   } = config;
 
   const outsideViewStyle = useMemo(
     () => [OUTSIDE_VIEW_STYLE, { backgroundColor }],
     [backgroundColor]
   );
-  const animatedStyles = useModalAnimation(animationType, keyboardBehavior);
+  const animatedStyles = useModalAnimation(
+    animationType,
+    keyboardBehavior,
+    disableSafeArea
+  );
   useCancelOnBackButton(androidCancelOnClickBack, onCancel);
 
   return (

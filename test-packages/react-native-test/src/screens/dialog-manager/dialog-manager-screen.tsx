@@ -3,6 +3,7 @@ import { Button, View } from 'react-native';
 import { DialogManager } from '@react-stateless-dialog/core';
 import { ConfirmDialog } from './dialogs/confirm-dialog';
 import { KeyboardDialog } from './dialogs/keyboard-dialog';
+import { FullscreenDialog } from './dialogs/fullscreen-dialog';
 
 export const DialogManagerScreen = () => {
   return (
@@ -35,6 +36,18 @@ export const DialogManagerScreen = () => {
         title="Fade animation"
         onPress={async () => {
           await DialogManager().push(ConfirmDialog, { message: 'Hello world' }, { animationType: 'fade' }).waitIgnoreCancel();
+        }}
+      />
+      <Button
+        title="Fullscren inside safearea"
+        onPress={async () => {
+          await DialogManager().push(FullscreenDialog, null, { disableSafeArea: false }).waitIgnoreCancel();
+        }}
+      />
+      <Button
+        title="Fullscren outside safearea"
+        onPress={async () => {
+          await DialogManager().push(FullscreenDialog, null, { disableSafeArea: true }).waitIgnoreCancel();
         }}
       />
     </View>

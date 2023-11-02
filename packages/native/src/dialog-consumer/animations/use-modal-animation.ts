@@ -29,7 +29,8 @@ const MAIN_VIEW_STYLE: ViewStyle = {
 
 export const useModalAnimation = (
   animationType: DialogConfig["animationType"],
-  keyboardBehavior: DialogConfig["keyboardBehavior"]
+  keyboardBehavior: DialogConfig["keyboardBehavior"],
+  disableSafeArea: DialogConfig["disableSafeArea"]
 ) => {
   const ref = useRef(animationType);
   if (ref.current !== animationType) {
@@ -46,7 +47,15 @@ export const useModalAnimation = (
   }
 
   const offsetY = useSharedValue(0);
-  const safearea = useSafeAreaInsets();
+  let safearea = useSafeAreaInsets();
+  if (disableSafeArea) {
+    safearea = {
+      top: 0,
+      bottom: 0,
+      right: 0,
+      left: 0,
+    };
+  }
 
   /* eslint-disable react-hooks/rules-of-hooks */
   if (keyboardBehavior) {

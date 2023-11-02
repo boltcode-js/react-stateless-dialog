@@ -23,6 +23,11 @@ export interface DialogConfig {
    * Perform a cancel when click on back button (android only)
    */
   androidCancelOnClickBack: boolean;
+
+  /**
+   * The dialog will be shown outside of the safeArea
+   */
+  disableSafeArea: boolean;
 }
 
 export const DIALOG_DEFAULT_CONFIG: DialogConfig = {
@@ -31,4 +36,5 @@ export const DIALOG_DEFAULT_CONFIG: DialogConfig = {
   quitOnTouchOutside: false,
   keyboardBehavior: undefined,
   androidCancelOnClickBack: false,
+  disableSafeArea: false,
 };

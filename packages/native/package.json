@@ -5,7 +5,7 @@
     "directory": "packages/native",
     "type": "git"
   },
-  "version": "0.1.7",
+  "version": "0.1.8",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "compile": "tsc --noEmit"
   },
   "peerDependencies": {
-    "@react-stateless-dialog/core": "=0.1.3",
+    "@react-stateless-dialog/core": "^0.1.8",
     "react": "^18.2.0",
     "react-native": "^0.72.4",
     "react-native-reanimated": "^3.4.2",
