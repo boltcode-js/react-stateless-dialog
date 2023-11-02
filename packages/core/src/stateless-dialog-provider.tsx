@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { DIALOG_DEFAULT_CONFIG } from "./dialog-manager/models/dialog-config";
 import { deepMerge, DeepPartial } from "./utils/utils";
 import { SNACKBAR_DEFAULT_CONFIG } from "./snackbar-manager/models/snackbar-config";
@@ -22,7 +22,9 @@ export const StatelessDialogProvider = (
     );
   }
 
-  useEffect(() => {
+  const firstRender = useRef(true);
+  if (firstRender.current) {
+    firstRender.current = false;
     const effectiveConfig = deepMerge({}, config, {
       dialog: {
         defaultConfig: deepMerge(
@@ -38,7 +40,7 @@ export const StatelessDialogProvider = (
       },
     } as DeepPartial<StatelessDialogConfig>);
     setGlobalConfig(effectiveConfig);
-  }, []);
+  }
 
   const DialogConsumer = config.dialog.Consumer;
   const ProgressConsumer = config.progress.Consumer;
