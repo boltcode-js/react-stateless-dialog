@@ -26,15 +26,15 @@ export const SnackbarManagerScreen = () => {
           }}
         />
         <Button
-          title="Default Snackbar (warn)"
+          title="Default Snackbar (warn / swipe down)"
           onPress={() => {
-            SnackbarManager().pushDefault('warn', 'Warn message');
+            SnackbarManager().pushDefault('warn', 'Warn message', { enableGesture: 'down' });
           }}
         />
         <Button
-          title="Default Snackbar (error)"
+          title="Default Snackbar (error / no swipe)"
           onPress={() => {
-            SnackbarManager().pushDefault('error', 'Error message');
+            SnackbarManager().pushDefault('error', 'Error message', { enableGesture: false });
           }}
         />
         <Button

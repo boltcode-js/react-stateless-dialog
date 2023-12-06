@@ -26,7 +26,10 @@ export {
   SnackbarManager,
   useSnackbarManager,
 } from "./snackbar-manager/snackbar-manager";
-export type { SnackbarConfig } from "./snackbar-manager/models/snackbar-config";
+export type {
+  SnackbarConfig,
+  SwipeDirection,
+} from "./snackbar-manager/models/snackbar-config";
 export { SNACKBAR_DEFAULT_CONFIG } from "./snackbar-manager/models/snackbar-config";
 export type { SnackbarInstance } from "./snackbar-manager/models/snackbar-instance";
 export type {

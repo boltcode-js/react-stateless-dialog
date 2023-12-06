@@ -12,20 +12,26 @@ import { RootNavigator } from './navigation/root-navigator';
 import { overrideStatelessDialogConfig, StatelessDialogProvider } from '@react-stateless-dialog/core';
 import { StatelessDialogConfigNative } from '@react-stateless-dialog/native';
 import { BannerSnackbar } from './screens/snackbar-manager/snackbars/banner-snackbar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const statelessDialogConfig = overrideStatelessDialogConfig(StatelessDialogConfigNative, {
   snackbar: {
     DefaultSnackbar: BannerSnackbar,
+    defaultConfig: {
+      enableGesture: true,
+    },
   },
 });
 
 function App() {
   return (
-    <SafeAreaProvider>
-      <StatelessDialogProvider config={statelessDialogConfig}>
-        <RootNavigator />
-      </StatelessDialogProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <StatelessDialogProvider config={statelessDialogConfig}>
+          <RootNavigator />
+        </StatelessDialogProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

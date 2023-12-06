@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
-import { SnackbarInstance, SnackbarConfig } from "@react-stateless-dialog/core";
+import { SnackbarConfig, SnackbarInstance } from "@react-stateless-dialog/core";
 import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
+import { useSwipeGesture } from "./gestures/use-swipe-gesture";
 
 export type GlobalBannerViewProps = {
   snackbar: SnackbarInstance<any>;
@@ -69,15 +70,19 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
     }
   }, [insets]);
 
+  const SwipeWrapper = useSwipeGesture(config, onFinished);
+
   return (
     <View style={mainStyle} pointerEvents="box-none">
-      <Animated.View
-        style={style}
-        onLayout={handleLayout}
-        pointerEvents="box-none"
-      >
-        <Component {...snackbar.context} config={config} />
-      </Animated.View>
+      <SwipeWrapper>
+        <Animated.View
+          style={style}
+          onLayout={handleLayout}
+          pointerEvents="box-none"
+        >
+          <Component {...snackbar.context} config={config} />
+        </Animated.View>
+      </SwipeWrapper>
     </View>
   );
 };

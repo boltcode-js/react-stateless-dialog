@@ -1,3 +1,5 @@
+export type SwipeDirection = "right" | "left" | "up" | "down";
+
 export type SnackbarConfig = {
   /**
    * The duration in ms the snackbar should persist
@@ -23,6 +25,12 @@ export type SnackbarConfig = {
    * If true, the snackbar will be contained inside the SafeArea
    */
   insideSafeArea: boolean;
+
+  /**
+   * If true, you can use swipe gesture to close the snackbar.
+   * If enableGesture is a SwipeDirection, override the default direction to swipe.
+   */
+  enableGesture: boolean | SwipeDirection;
 };
 
 export const SNACKBAR_DEFAULT_CONFIG: SnackbarConfig = {
@@ -31,4 +39,5 @@ export const SNACKBAR_DEFAULT_CONFIG: SnackbarConfig = {
   horizontal: "center",
   animationType: "none",
   insideSafeArea: false,
+  enableGesture: false,
 };
