@@ -1,4 +1,4 @@
-import { SnackbarConfig } from "@react-stateless-dialog/core/lib/snackbar-manager/models/snackbar-config";
+import { SnackbarConfig } from "@react-stateless-dialog/core";
 import { useCallback, useEffect } from "react";
 
 export const useSnackbarNoneAnimation = (

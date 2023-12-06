@@ -1,5 +1,5 @@
 import React from "react";
-import { useSnackbarManager } from "@react-stateless-dialog/core/lib/snackbar-manager/snackbar-manager";
+import { useSnackbarManager } from "@react-stateless-dialog/core";
 import { SnackbarView } from "./snackbar-view";
 
 export const SnackbarConsumer = () => {

@@ -8,13 +8,16 @@
   "version": "0.1.8",
   "license": "MIT",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "types": "types/index.d.ts",
+  "react-native": "src/index.ts",
   "files": [
-    "lib/**/*"
+    "lib/**/*",
+    "types/**/*",
+    "src/**/*"
   ],
   "scripts": {
     "build": "tsc --project ./tsconfig.json",
-    "clean": "rm -rf lib",
+    "clean": "rm -rf lib types",
     "pub": "yarn clean && yarn build && yarn publish --access public",
     "compile": "tsc --noEmit"
   },

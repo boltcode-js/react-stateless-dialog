@@ -8,7 +8,7 @@ import {
 } from "react-native-reanimated";
 import { useCallback } from "react";
 import { LayoutChangeEvent } from "react-native";
-import { SnackbarConfig } from "@react-stateless-dialog/core/lib/snackbar-manager/models/snackbar-config";
+import { SnackbarConfig } from "@react-stateless-dialog/core";
 
 const INITIAL_OFFSET = -100000;
 
