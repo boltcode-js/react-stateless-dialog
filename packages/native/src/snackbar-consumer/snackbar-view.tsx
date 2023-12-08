@@ -43,7 +43,10 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
   const Component = snackbar.Component;
   const config = snackbar.config;
 
-  const { handleLayout, style } = useSnackbarAnimation(config, onFinished);
+  const { handleLayout, style, closeAnimation } = useSnackbarAnimation(
+    config,
+    onFinished
+  );
 
   const insets = useSafeAreaInsets();
   const mainStyle = useMemo<StyleProp<ViewStyle>>(() => {
@@ -70,7 +73,7 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
     }
   }, [insets]);
 
-  const SwipeWrapper = useSwipeGesture(config, onFinished);
+  const SwipeWrapper = useSwipeGesture(config, closeAnimation);
 
   return (
     <View style={mainStyle} pointerEvents="box-none">

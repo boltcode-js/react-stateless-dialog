@@ -1,7 +1,10 @@
 import React, { useCallback } from "react";
-import { SnackbarConfig, SwipeDirection } from "@react-stateless-dialog/core";
+import {
+  getEffectiveSlideFromPosition,
+  RelativePosition,
+  SnackbarConfig,
+} from "@react-stateless-dialog/core";
 import Animated, {
-  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -9,27 +12,11 @@ import Animated, {
 import { LayoutChangeEvent } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
-const getSwipeDirection = (config: SnackbarConfig): SwipeDirection => {
-  if (typeof config.enableGesture !== "boolean") {
-    return config.enableGesture;
-  } else if (config.vertical === "top") {
-    return "up";
-  } else if (config.vertical === "bottom") {
-    return "down";
-  } else if (config.horizontal === "left") {
-    return "left";
-  } else if (config.horizontal === "right") {
-    return "right";
-  } else {
-    return "up";
-  }
-};
-
 const selectAxis = (
-  direction: SwipeDirection,
+  direction: RelativePosition,
   axis: { x: number; y: number }
 ) => {
-  return direction === "up" || direction === "down" ? axis.y : axis.x;
+  return direction === "right" || direction === "left" ? axis.x : axis.y;
 };
 
 /**
@@ -38,10 +25,10 @@ const selectAxis = (
  * @param translation
  */
 const normalizeTranslation = (
-  direction: SwipeDirection,
+  direction: RelativePosition,
   translation: number
 ) => {
-  if (direction === "up" || direction === "left") {
+  if (direction === "top" || direction === "left") {
     return translation * -1;
   } else {
     return translation;
@@ -59,7 +46,12 @@ export const useSwipeGesture = (
     }, []);
   }
 
-  const direction = getSwipeDirection(config);
+  const direction = getEffectiveSlideFromPosition(
+    config.slideFromPosition,
+    config.vertical,
+    config.horizontal,
+    "top"
+  );
 
   const size = useSharedValue(0);
   const handleLayout = useCallback(
@@ -101,22 +93,23 @@ export const useSwipeGesture = (
       );
 
       if (translation > size.value * 0.2) {
-        swipeTranslation.value = withTiming(
+        /*swipeTranslation.value = withTiming(
           size.value,
           { duration: 100 },
           () => {
             runOnJS(onFinished)();
           }
-        );
+        );*/
+        onFinished();
       } else {
         swipeTranslation.value = withTiming(0, { duration: 100 });
       }
     });
 
   const swipeStyle = useAnimatedStyle(() => {
-    if (direction === "up") {
+    if (direction === "top") {
       return { transform: [{ translateY: -swipeTranslation.value }] };
-    } else if (direction === "down") {
+    } else if (direction === "bottom") {
       return { transform: [{ translateY: swipeTranslation.value }] };
     } else if (direction === "left") {
       return { transform: [{ translateX: -swipeTranslation.value }] };

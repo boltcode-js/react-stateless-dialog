@@ -1,4 +1,5 @@
 import {
+  cancelAnimation,
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
@@ -6,9 +7,14 @@ import {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import { useCallback } from "react";
-import { LayoutChangeEvent } from "react-native";
-import { SnackbarConfig } from "@react-stateless-dialog/core";
+import { useCallback, useRef } from "react";
+import { LayoutChangeEvent, useWindowDimensions } from "react-native";
+import {
+  SnackbarConfig,
+  getEffectiveSlideFromPosition,
+  getRelativeStartPosition,
+} from "@react-stateless-dialog/core";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const INITIAL_OFFSET = -100000;
 
@@ -16,54 +22,18 @@ export const useSnackbarSlideAnimation = (
   config: SnackbarConfig,
   onFinished: () => void
 ) => {
-  const translateX =
-    config.vertical === "center" && config.horizontal !== "center";
-
-  const offset = useSharedValue(INITIAL_OFFSET);
-
-  const handleLayout = useCallback(
-    (event: LayoutChangeEvent) => {
-      function handleFinished(finished?: boolean) {
-        "worklet";
-        if (finished) {
-          runOnJS(onFinished)();
-        }
-      }
-
-      if (translateX) {
-        const width = event.nativeEvent.layout.width;
-
-        offset.value = config.horizontal === "left" ? -width : width;
-        offset.value = withSequence(
-          withTiming(0, { duration: 300 }),
-          withDelay(
-            config.duration,
-            withTiming(
-              config.horizontal === "left" ? -width : width,
-              { duration: 300 },
-              handleFinished
-            )
-          )
-        );
-      } else {
-        const height = event.nativeEvent.layout.height;
-
-        offset.value = config.vertical === "top" ? -height : height;
-        offset.value = withSequence(
-          withTiming(0, { duration: 300 }),
-          withDelay(
-            config.duration,
-            withTiming(
-              config.vertical === "top" ? -height : height,
-              { duration: 300 },
-              handleFinished
-            )
-          )
-        );
-      }
-    },
-    [offset, config.duration, onFinished]
+  const slideFrom = getEffectiveSlideFromPosition(
+    config.slideFromPosition,
+    config.vertical,
+    config.horizontal,
+    "top"
   );
+
+  const translateX = slideFrom === "left" || slideFrom === "right";
+  const initialValue = useRef<number>(undefined);
+  const offset = useSharedValue(INITIAL_OFFSET);
+  const winSize = useWindowDimensions();
+  const safearea = useSafeAreaInsets();
 
   const animatedStyles = useAnimatedStyle(() => {
     return {
@@ -74,5 +44,66 @@ export const useSnackbarSlideAnimation = (
     };
   });
 
-  return { animatedStyles, handleLayout };
+  const handleLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      function handleFinished(finished?: boolean) {
+        "worklet";
+        if (finished) {
+          runOnJS(onFinished)();
+        }
+      }
+
+      const startPosition = getRelativeStartPosition(
+        slideFrom,
+        config.vertical,
+        config.horizontal,
+        {
+          width: event.nativeEvent.layout.width,
+          height: event.nativeEvent.layout.height,
+        },
+        { width: winSize.width, height: winSize.height },
+        config.insideSafeArea ? safearea : undefined
+      );
+
+      initialValue.current = translateX ? startPosition.x : startPosition.y;
+      offset.value = initialValue.current;
+      offset.value = withSequence(
+        withTiming(0, { duration: 300 }),
+        withDelay(
+          config.duration,
+          withTiming(initialValue.current, { duration: 300 }, handleFinished)
+        )
+      );
+    },
+    [
+      offset,
+      config.duration,
+      config.vertical,
+      config.horizontal,
+      onFinished,
+      slideFrom,
+      translateX,
+    ]
+  );
+
+  const closeAnimation = useCallback(() => {
+    if (initialValue.current === null || initialValue.current === undefined) {
+      onFinished();
+    } else {
+      function handleFinished(finished?: boolean) {
+        "worklet";
+        if (finished) {
+          runOnJS(onFinished)();
+        }
+      }
+
+      cancelAnimation(offset);
+      offset.value = withDelay(
+        config.duration,
+        withTiming(initialValue.current, { duration: 300 }, handleFinished)
+      );
+    }
+  }, [initialValue]);
+
+  return { animatedStyles, handleLayout, closeAnimation };
 };

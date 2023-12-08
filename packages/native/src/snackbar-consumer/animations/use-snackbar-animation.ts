@@ -11,27 +11,27 @@ export const useSnackbarAnimation = (
 ): {
   style: AnimatedStyle<ViewStyle>;
   handleLayout: (event: LayoutChangeEvent) => void;
+  closeAnimation: () => void;
 } => {
   if (config.animationType === "slide") {
-    const { animatedStyles, handleLayout } = useSnackbarSlideAnimation(
-      config,
-      onFinished
-    );
+    const { animatedStyles, handleLayout, closeAnimation } =
+      useSnackbarSlideAnimation(config, onFinished);
 
-    return { style: animatedStyles, handleLayout };
+    return { style: animatedStyles, handleLayout, closeAnimation: () => {} };
   } else if (config.animationType === "fade") {
     const { animatedStyles, handleLayout } = useSnackbarFadeAnimation(
       config,
       onFinished
     );
 
-    return { style: animatedStyles, handleLayout };
+    return { style: animatedStyles, handleLayout, closeAnimation: () => {} };
   } else {
     const { handleLayout } = useSnackbarNoneAnimation(config, onFinished);
 
     return {
       style: {},
       handleLayout,
+      closeAnimation: () => {},
     };
   }
 };
