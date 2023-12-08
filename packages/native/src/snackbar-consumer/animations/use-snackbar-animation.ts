@@ -4,34 +4,25 @@ import { AnimatedStyle } from "react-native-reanimated";
 import { useSnackbarSlideAnimation } from "./use-snackbar-slide-animation";
 import { useSnackbarFadeAnimation } from "./use-snackbar-fade-animation";
 import { useSnackbarNoneAnimation } from "./use-snackbar-none-animation";
+import { ComposedGesture, GestureType } from "react-native-gesture-handler";
+
+export type UseSnackbarAnimationResult = {
+  animatedStyles: AnimatedStyle<ViewStyle>;
+  handleLayout: (event: LayoutChangeEvent) => void;
+  // TODO: Close animation (animated: boolean) ??
+  closeAnimation: () => void;
+  gesture?: ComposedGesture | GestureType;
+};
 
 export const useSnackbarAnimation = (
   config: SnackbarConfig,
   onFinished: () => void
-): {
-  style: AnimatedStyle<ViewStyle>;
-  handleLayout: (event: LayoutChangeEvent) => void;
-  closeAnimation: () => void;
-} => {
+): UseSnackbarAnimationResult => {
   if (config.animationType === "slide") {
-    const { animatedStyles, handleLayout, closeAnimation } =
-      useSnackbarSlideAnimation(config, onFinished);
-
-    return { style: animatedStyles, handleLayout, closeAnimation: () => {} };
+    return useSnackbarSlideAnimation(config, onFinished);
   } else if (config.animationType === "fade") {
-    const { animatedStyles, handleLayout } = useSnackbarFadeAnimation(
-      config,
-      onFinished
-    );
-
-    return { style: animatedStyles, handleLayout, closeAnimation: () => {} };
+    return useSnackbarFadeAnimation(config, onFinished);
   } else {
-    const { handleLayout } = useSnackbarNoneAnimation(config, onFinished);
-
-    return {
-      style: {},
-      handleLayout,
-      closeAnimation: () => {},
-    };
+    return useSnackbarNoneAnimation(config, onFinished);
   }
 };

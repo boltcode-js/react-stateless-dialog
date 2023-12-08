@@ -5,7 +5,7 @@ import { SnackbarConfig, SnackbarInstance } from "@react-stateless-dialog/core";
 import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
-import { useSwipeGesture } from "./gestures/use-swipe-gesture";
+import { useGestureWrapper } from "./gestures/use-gesture-wrapper";
 
 export type GlobalBannerViewProps = {
   snackbar: SnackbarInstance<any>;
@@ -43,10 +43,8 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
   const Component = snackbar.Component;
   const config = snackbar.config;
 
-  const { handleLayout, style, closeAnimation } = useSnackbarAnimation(
-    config,
-    onFinished
-  );
+  const { handleLayout, animatedStyles, closeAnimation, gesture } =
+    useSnackbarAnimation(config, onFinished);
 
   const insets = useSafeAreaInsets();
   const mainStyle = useMemo<StyleProp<ViewStyle>>(() => {
@@ -73,19 +71,19 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
     }
   }, [insets]);
 
-  const SwipeWrapper = useSwipeGesture(config, closeAnimation);
+  const GestureWrapper = useGestureWrapper(gesture);
 
   return (
     <View style={mainStyle} pointerEvents="box-none">
-      <SwipeWrapper>
+      <GestureWrapper>
         <Animated.View
-          style={style}
+          style={animatedStyles}
           onLayout={handleLayout}
           pointerEvents="box-none"
         >
           <Component {...snackbar.context} config={config} />
         </Animated.View>
-      </SwipeWrapper>
+      </GestureWrapper>
     </View>
   );
 };

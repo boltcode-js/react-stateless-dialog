@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Button, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
-import { SnackbarManager, SnackbarConfig, DefaultSnackbarProps } from '@react-stateless-dialog/core';
-import { BannerSnackbar } from './snackbars/banner-snackbar';
+import { DefaultSnackbarProps, SnackbarConfig, SnackbarManager } from '@react-stateless-dialog/core';
 import CheckBox from '@react-native-community/checkbox';
 import { ToastSnackbar } from './snackbars/toast-snackbar';
 
@@ -16,9 +15,6 @@ export const SnackbarManagerScreen = () => {
     slideFromPosition: undefined,
     duration: 3000,
   });
-  // const [vertical, setVertical] = useState<SnackbarConfig['vertical']>('top');
-  // const [horizontal, setHorizontal] = useState<SnackbarConfig['horizontal']>('left');
-  // const [animationType, setAnimation] = useState<SnackbarConfig['animationType']>('none');
 
   return (
     <SafeAreaView style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -27,12 +23,6 @@ export const SnackbarManagerScreen = () => {
           title="Default"
           onPress={() => {
             SnackbarManager().pushDefault(defaultType, 'Hey, this is a default message', config);
-          }}
-        />
-        <Button
-          title="Banner"
-          onPress={() => {
-            SnackbarManager().push(BannerSnackbar, { message: 'Hello world', type: 'info' }, config);
           }}
         />
         <Button

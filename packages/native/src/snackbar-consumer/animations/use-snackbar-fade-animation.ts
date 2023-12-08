@@ -8,11 +8,12 @@ import {
   withTiming,
 } from "react-native-reanimated";
 import { useCallback } from "react";
+import { UseSnackbarAnimationResult } from "./use-snackbar-animation";
 
 export const useSnackbarFadeAnimation = (
   config: SnackbarConfig,
   onFinished: () => void
-) => {
+): UseSnackbarAnimationResult => {
   const opacity = useSharedValue(0);
 
   const handleLayout = useCallback(() => {
@@ -36,5 +37,6 @@ export const useSnackbarFadeAnimation = (
     opacity: opacity.value,
   }));
 
-  return { animatedStyles, handleLayout };
+  // TODO: Close animation
+  return { animatedStyles, handleLayout, closeAnimation: onFinished };
 };
