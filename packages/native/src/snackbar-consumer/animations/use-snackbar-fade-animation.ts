@@ -12,7 +12,7 @@ import { UseSnackbarAnimationResult } from "./use-snackbar-animation";
 
 export const useSnackbarFadeAnimation = (
   config: SnackbarConfig,
-  onFinished: () => void
+  destroy: () => void
 ): UseSnackbarAnimationResult => {
   const opacity = useSharedValue(0);
 
@@ -20,7 +20,7 @@ export const useSnackbarFadeAnimation = (
     function handleFinished(finished?: boolean) {
       "worklet";
       if (finished) {
-        runOnJS(onFinished)();
+        runOnJS(destroy)();
       }
     }
 
@@ -31,12 +31,12 @@ export const useSnackbarFadeAnimation = (
         withTiming(0, { duration: 300 }, handleFinished)
       )
     );
-  }, [opacity, config.duration, onFinished]);
+  }, [opacity, config.duration, destroy]);
 
   const animatedStyles = useAnimatedStyle(() => ({
     opacity: opacity.value,
   }));
 
   // TODO: Close animation
-  return { animatedStyles, handleLayout, close: onFinished };
+  return { animatedStyles, handleLayout, close: destroy };
 };

@@ -1,15 +1,18 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
-import { SnackbarConfig, SnackbarInstance } from "@react-stateless-dialog/core";
+import {
+  SnackbarConfig,
+  SnackbarInstance,
+  useSnackbarManager,
+} from "@react-stateless-dialog/core";
 import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 import { useGestureWrapper } from "./gestures/use-gesture-wrapper";
 
-export type GlobalBannerViewProps = {
+export type SnackbarViewProps = {
   snackbar: SnackbarInstance<any>;
-  onFinished: () => void;
 };
 
 const MAIN_VIEW_STYLE: ViewStyle = {
@@ -37,15 +40,19 @@ const verticalToFlexAlign = (
   else return "center";
 };
 
-export const SnackbarView = (props: GlobalBannerViewProps) => {
-  const { snackbar, onFinished } = props;
+export const SnackbarView = (props: SnackbarViewProps) => {
+  const { snackbar } = props;
 
   const Component = snackbar.Component;
   const config = snackbar.config;
 
+  const destroy = useCallback(() => {
+    useSnackbarManager.getState().destroy(snackbar.id);
+  }, [snackbar.id]);
+
   const { handleLayout, animatedStyles, close, gesture } = useSnackbarAnimation(
     config,
-    onFinished
+    destroy
   );
 
   const insets = useSafeAreaInsets();
@@ -74,6 +81,9 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
   }, [insets]);
 
   const GestureWrapper = useGestureWrapper(gesture);
+  const handleClose = useCallback(() => {
+    close(true);
+  }, [close]);
 
   return (
     <View style={mainStyle} pointerEvents="box-none">
@@ -83,7 +93,11 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
           onLayout={handleLayout}
           pointerEvents="box-none"
         >
-          <Component {...snackbar.context} config={config} />
+          <Component
+            {...snackbar.context}
+            onClose={handleClose}
+            config={config}
+          />
         </Animated.View>
       </GestureWrapper>
     </View>

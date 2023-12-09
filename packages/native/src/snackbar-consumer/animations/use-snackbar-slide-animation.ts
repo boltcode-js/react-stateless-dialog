@@ -22,7 +22,6 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Gesture } from "react-native-gesture-handler";
 import { UseSnackbarAnimationResult } from "./use-snackbar-animation";
-import { AnimatableValue } from "react-native-reanimated/src/reanimated2/commonTypes";
 
 const INITIAL_OFFSET = -100000;
 const ANIMATION_DURATION = 300;
@@ -49,7 +48,7 @@ const isSameDirection = (direction: RelativePosition, translation: number) => {
 
 export const useSnackbarSlideAnimation = (
   config: SnackbarConfig,
-  onFinished: () => void
+  destroy: () => void
 ): UseSnackbarAnimationResult => {
   const slideFrom = getEffectiveSlideFromPosition(
     config.slideFromPosition,
@@ -81,10 +80,10 @@ export const useSnackbarSlideAnimation = (
 
   const getCloseAnimation = useCallback(
     (isDelayed: boolean) => {
-      function handleFinished(finished?: boolean, current?: AnimatableValue) {
+      function handleFinished(finished?: boolean) {
         "worklet";
         if (finished) {
-          runOnJS(onFinished)();
+          runOnJS(destroy)();
         }
       }
 
@@ -120,6 +119,7 @@ export const useSnackbarSlideAnimation = (
 
   const handleLayout = useCallback(
     (event: LayoutChangeEvent) => {
+      console.log(`[${status.value}] OnLayout: `, event.nativeEvent.layout);
       layout.current = event.nativeEvent.layout;
 
       const startPosition = getRelativeStartPosition(
@@ -149,7 +149,7 @@ export const useSnackbarSlideAnimation = (
       config.duration,
       config.vertical,
       config.horizontal,
-      onFinished,
+      destroy,
       slideFrom,
       translateX,
       getCloseAnimation,
@@ -161,7 +161,7 @@ export const useSnackbarSlideAnimation = (
       if (status.value && animated) {
         offset.value = getCloseAnimation(false);
       } else {
-        onFinished();
+        destroy();
       }
     },
     [initialOffset]
@@ -170,7 +170,7 @@ export const useSnackbarSlideAnimation = (
   const direction = slideFrom;
   const gesture = Gesture.Pan()
     .runOnJS(true)
-    .onStart((e) => {
+    .onStart(() => {
       if (status.value !== "waiting") {
         return;
       }

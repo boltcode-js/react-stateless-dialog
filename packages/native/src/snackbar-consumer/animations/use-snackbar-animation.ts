@@ -15,13 +15,13 @@ export type UseSnackbarAnimationResult = {
 
 export const useSnackbarAnimation = (
   config: SnackbarConfig,
-  onFinished: () => void
+  destroy: () => void
 ): UseSnackbarAnimationResult => {
   if (config.animationType === "slide") {
-    return useSnackbarSlideAnimation(config, onFinished);
+    return useSnackbarSlideAnimation(config, destroy);
   } else if (config.animationType === "fade") {
-    return useSnackbarFadeAnimation(config, onFinished);
+    return useSnackbarFadeAnimation(config, destroy);
   } else {
-    return useSnackbarNoneAnimation(config, onFinished);
+    return useSnackbarNoneAnimation(config, destroy);
   }
 };

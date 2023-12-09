@@ -4,15 +4,15 @@ import { UseSnackbarAnimationResult } from "./use-snackbar-animation";
 
 export const useSnackbarNoneAnimation = (
   config: SnackbarConfig,
-  onFinished: () => void
+  destroy: () => void
 ): UseSnackbarAnimationResult => {
   let timeout: NodeJS.Timeout;
   const handleLayout = useCallback(() => {
     timeout = setTimeout(() => {
-      onFinished();
+      destroy();
       timeout = undefined;
     }, config.duration);
-  }, [config.duration, onFinished]);
+  }, [config.duration, destroy]);
 
   useEffect(() => {
     return () => {
@@ -23,5 +23,5 @@ export const useSnackbarNoneAnimation = (
     };
   }, []);
 
-  return { handleLayout, animatedStyles: {}, close: onFinished };
+  return { handleLayout, animatedStyles: {}, close: destroy };
 };
