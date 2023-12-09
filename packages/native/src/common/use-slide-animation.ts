@@ -16,15 +16,15 @@ import {
 import {
   getEffectiveSlideFromPosition,
   getSlideStartPosition,
+  HorizontalAlignement,
   RelativePosition,
-  SnackbarConfig,
+  VerticalAlignement,
 } from "@react-stateless-dialog/core";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Gesture } from "react-native-gesture-handler";
-import { UseSnackbarAnimationResult } from "./use-snackbar-animation";
 
-const INITIAL_OFFSET = -100000;
 const ANIMATION_DURATION = 300;
+const INITIAL_OFFSET = -100000;
 
 const selectAxis = (
   direction: RelativePosition,
@@ -46,20 +46,27 @@ const isSameDirection = (direction: RelativePosition, translation: number) => {
   }
 };
 
-export const useSnackbarSlideAnimation = (
-  config: SnackbarConfig,
-  destroy: () => void
-): UseSnackbarAnimationResult => {
+export type SlideStatus = "starting" | "waiting" | "finishing";
+
+export type UseSlideAnimationArgs = {
+  slideFromPosition: RelativePosition;
+  defaultSlideFromPosition: RelativePosition;
+  vertical: VerticalAlignement;
+  horizontal: HorizontalAlignement;
+  insideSafeArea: boolean;
+  destroy: () => void;
+  autoCloseDelay?: number;
+};
+
+export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
   const slideFrom = getEffectiveSlideFromPosition(
-    config.slideFromPosition,
-    config.vertical,
-    config.horizontal,
-    "top"
+    args.slideFromPosition,
+    args.vertical,
+    args.horizontal,
+    args.defaultSlideFromPosition
   );
 
-  const status = useSharedValue<"starting" | "waiting" | "finishing">(
-    undefined
-  );
+  const status = useSharedValue<SlideStatus>(undefined);
   const translateX = slideFrom === "left" || slideFrom === "right";
   const layout = useRef<LayoutRectangle>(undefined);
   const initialOffset = useRef<number>(undefined);
@@ -78,10 +85,14 @@ export const useSnackbarSlideAnimation = (
 
   const getCloseAnimation = useCallback(
     (isDelayed: boolean) => {
+      if (isDelayed && !args.autoCloseDelay) {
+        return null;
+      }
+
       function handleFinished(finished?: boolean) {
         "worklet";
         if (finished) {
-          runOnJS(destroy)();
+          runOnJS(args.destroy)();
         }
       }
 
@@ -93,7 +104,7 @@ export const useSnackbarSlideAnimation = (
 
       if (isDelayed) {
         return withDelay(
-          config.duration,
+          args.autoCloseDelay,
           withSequence(
             withTiming(0, { duration: 0 }, (finished) => {
               if (finished) {
@@ -112,7 +123,7 @@ export const useSnackbarSlideAnimation = (
         return closeAnim;
       }
     },
-    [config.duration]
+    [args.autoCloseDelay, args.destroy]
   );
 
   const handleLayout = useCallback(
@@ -121,35 +132,29 @@ export const useSnackbarSlideAnimation = (
 
       const startPosition = getSlideStartPosition(
         slideFrom,
-        config.vertical,
-        config.horizontal,
+        args.vertical,
+        args.horizontal,
         {
           width: layout.current.width,
           height: layout.current.height,
         },
         { width: winSize.width, height: winSize.height },
-        config.insideSafeArea ? safearea : undefined
+        args.insideSafeArea ? safearea : undefined
       );
 
       status.value = "starting";
       initialOffset.current = translateX ? startPosition.x : startPosition.y;
       offset.value = initialOffset.current;
       offset.value = withSequence(
-        withTiming(0, { duration: ANIMATION_DURATION }, () => {
-          status.value = "waiting";
-        }),
-        getCloseAnimation(true)
+        ...[
+          withTiming(0, { duration: ANIMATION_DURATION }, () => {
+            status.value = "waiting";
+          }),
+          args.autoCloseDelay ? getCloseAnimation(true) : undefined,
+        ].filter((x) => !!x)
       );
     },
-    [
-      offset,
-      config,
-      safearea,
-      destroy,
-      slideFrom,
-      translateX,
-      getCloseAnimation,
-    ]
+    [offset, args, safearea, slideFrom, translateX, getCloseAnimation]
   );
 
   const close = useCallback(
@@ -157,10 +162,10 @@ export const useSnackbarSlideAnimation = (
       if (status.value && animated) {
         offset.value = getCloseAnimation(false);
       } else {
-        destroy();
+        args.destroy();
       }
     },
-    [initialOffset]
+    [initialOffset, args.destroy]
   );
 
   const direction = slideFrom;
@@ -215,7 +220,9 @@ export const useSnackbarSlideAnimation = (
         swipeTranslation.value = 0;
 
         function handleRestore() {
-          offset.value = getCloseAnimation(true);
+          if (args.autoCloseDelay) {
+            offset.value = getCloseAnimation(true);
+          }
         }
 
         offset.value = withTiming(

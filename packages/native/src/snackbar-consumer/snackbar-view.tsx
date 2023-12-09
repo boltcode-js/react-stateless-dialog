@@ -9,7 +9,7 @@ import {
 import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
-import { useGestureWrapper } from "./gestures/use-gesture-wrapper";
+import { useGestureWrapper } from "../common/use-gesture-wrapper";
 
 export type SnackbarViewProps = {
   snackbar: SnackbarInstance<any>;

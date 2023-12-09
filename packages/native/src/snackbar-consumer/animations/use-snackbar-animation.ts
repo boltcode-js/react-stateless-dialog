@@ -1,10 +1,10 @@
 import { LayoutChangeEvent, ViewStyle } from "react-native";
 import { SnackbarConfig } from "@react-stateless-dialog/core";
 import { AnimatedStyle } from "react-native-reanimated";
-import { useSnackbarSlideAnimation } from "./use-snackbar-slide-animation";
 import { useSnackbarFadeAnimation } from "./use-snackbar-fade-animation";
 import { useSnackbarNoneAnimation } from "./use-snackbar-none-animation";
 import { ComposedGesture, GestureType } from "react-native-gesture-handler";
+import { useSlideAnimation } from "../../common/use-slide-animation";
 
 export type UseSnackbarAnimationResult = {
   animatedStyles: AnimatedStyle<ViewStyle>;
@@ -18,7 +18,15 @@ export const useSnackbarAnimation = (
   destroy: () => void
 ): UseSnackbarAnimationResult => {
   if (config.animationType === "slide") {
-    return useSnackbarSlideAnimation(config, destroy);
+    return useSlideAnimation({
+      vertical: config.vertical,
+      horizontal: config.horizontal,
+      insideSafeArea: config.insideSafeArea,
+      slideFromPosition: config.slideFromPosition,
+      defaultSlideFromPosition: "top",
+      autoCloseDelay: config.duration,
+      destroy,
+    });
   } else if (config.animationType === "fade") {
     return useSnackbarFadeAnimation(config, destroy);
   } else {
