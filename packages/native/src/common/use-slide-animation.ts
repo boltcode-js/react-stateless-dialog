@@ -126,8 +126,14 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
     [args.autoCloseDelay, args.destroy]
   );
 
+  const isLayouted = useRef(false);
   const handleLayout = useCallback(
     (event: LayoutChangeEvent) => {
+      if (isLayouted.current) {
+        return;
+      }
+      isLayouted.current = true;
+
       layout.current = event.nativeEvent.layout;
 
       const startPosition = getSlideStartPosition(
