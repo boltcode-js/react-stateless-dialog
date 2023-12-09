@@ -22,8 +22,10 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Gesture } from "react-native-gesture-handler";
 import { UseSnackbarAnimationResult } from "./use-snackbar-animation";
+import { AnimatableValue } from "react-native-reanimated/src/reanimated2/commonTypes";
 
 const INITIAL_OFFSET = -100000;
+const ANIMATION_DURATION = 300;
 
 const selectAxis = (
   direction: RelativePosition,
@@ -56,6 +58,9 @@ export const useSnackbarSlideAnimation = (
     "top"
   );
 
+  const status = useSharedValue<"starting" | "waiting" | "finishing">(
+    undefined
+  );
   const translateX = slideFrom === "left" || slideFrom === "right";
   const layout = useRef<LayoutRectangle>(undefined);
   const initialOffset = useRef<number>(undefined);
@@ -74,12 +79,44 @@ export const useSnackbarSlideAnimation = (
     };
   });
 
-  function handleFinished(finished?: boolean) {
-    "worklet";
-    if (finished) {
-      runOnJS(onFinished)();
-    }
-  }
+  const getCloseAnimation = useCallback(
+    (isDelayed: boolean) => {
+      function handleFinished(finished?: boolean, current?: AnimatableValue) {
+        "worklet";
+        if (finished) {
+          runOnJS(onFinished)();
+        }
+      }
+
+      const closeAnim = withTiming(
+        initialOffset.current,
+        { duration: ANIMATION_DURATION },
+        handleFinished
+      );
+
+      if (isDelayed) {
+        return withDelay(
+          config.duration,
+          withSequence(
+            withTiming(0, { duration: 0 }, (finished) => {
+              if (finished) {
+                status.value = "finishing";
+              }
+            }),
+            withTiming(
+              initialOffset.current,
+              { duration: ANIMATION_DURATION },
+              handleFinished
+            )
+          )
+        );
+      } else {
+        status.value = "finishing";
+        return closeAnim;
+      }
+    },
+    [config.duration]
+  );
 
   const handleLayout = useCallback(
     (event: LayoutChangeEvent) => {
@@ -97,14 +134,14 @@ export const useSnackbarSlideAnimation = (
         config.insideSafeArea ? safearea : undefined
       );
 
+      status.value = "starting";
       initialOffset.current = translateX ? startPosition.x : startPosition.y;
       offset.value = initialOffset.current;
       offset.value = withSequence(
-        withTiming(0, { duration: 300 }),
-        withDelay(
-          config.duration,
-          withTiming(initialOffset.current, { duration: 300 }, handleFinished)
-        )
+        withTiming(0, { duration: ANIMATION_DURATION }, () => {
+          status.value = "waiting";
+        }),
+        getCloseAnimation(true)
       );
     },
     [
@@ -115,32 +152,34 @@ export const useSnackbarSlideAnimation = (
       onFinished,
       slideFrom,
       translateX,
+      getCloseAnimation,
     ]
   );
 
-  const closeAnimation = useCallback(() => {
-    if (initialOffset.current === null || initialOffset.current === undefined) {
-      onFinished();
-    } else {
-      offset.value = withTiming(
-        initialOffset.current,
-        { duration: 300 },
-        handleFinished
-      );
-    }
-  }, [initialOffset]);
+  const close = useCallback(
+    (animated?: boolean) => {
+      if (status.value && animated) {
+        offset.value = getCloseAnimation(false);
+      } else {
+        onFinished();
+      }
+    },
+    [initialOffset]
+  );
 
   const direction = slideFrom;
   const gesture = Gesture.Pan()
     .runOnJS(true)
-    .onUpdate((e) => {
-      if (
-        initialOffset.current === null ||
-        initialOffset.current === undefined
-      ) {
+    .onStart((e) => {
+      if (status.value !== "waiting") {
         return;
       }
       cancelAnimation(offset);
+    })
+    .onUpdate((e) => {
+      if (status.value !== "waiting") {
+        return;
+      }
 
       const translation = selectAxis(direction, {
         x: e.translationX,
@@ -154,6 +193,10 @@ export const useSnackbarSlideAnimation = (
       }
     })
     .onEnd((e) => {
+      if (status.value !== "waiting") {
+        return;
+      }
+
       const translation = selectAxis(direction, {
         x: e.translationX,
         y: e.translationY,
@@ -170,19 +213,27 @@ export const useSnackbarSlideAnimation = (
       ) {
         swipeTranslation.value = 0;
         offset.value = offset.value + translation;
-        closeAnimation();
+        offset.value = getCloseAnimation(false);
       } else {
         offset.value = offset.value + swipeTranslation.value;
         swipeTranslation.value = 0;
-        offset.value = withSequence(
-          withTiming(0, { duration: 200 }),
-          withDelay(
-            config.duration,
-            withTiming(initialOffset.current, { duration: 300 }, handleFinished)
-          )
+
+        function handleRestore() {
+          offset.value = getCloseAnimation(true);
+        }
+
+        offset.value = withTiming(
+          0,
+          {
+            duration: ANIMATION_DURATION * (1 - translation / size),
+          },
+          function () {
+            "worklet";
+            runOnJS(handleRestore)();
+          }
         );
       }
     });
 
-  return { animatedStyles, handleLayout, closeAnimation, gesture };
+  return { animatedStyles, handleLayout, close, gesture };
 };

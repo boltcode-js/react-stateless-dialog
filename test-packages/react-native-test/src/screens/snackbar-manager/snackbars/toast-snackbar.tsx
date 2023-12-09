@@ -9,6 +9,7 @@ export const ToastSnackbar: SnackbarComponent<{ message: string }> = (props) => 
     <View style={{ borderWidth: 1, backgroundColor: 'orange', padding: 20, flexDirection: 'row', alignItems: 'center' }}>
       <Text>{args.message}</Text>
       <Button title="(close)" onPress={onClose} />
+      <Button title="(animated)" onPress={() => onClose(true)} />
     </View>
   );
 };

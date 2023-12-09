@@ -38,5 +38,5 @@ export const useSnackbarFadeAnimation = (
   }));
 
   // TODO: Close animation
-  return { animatedStyles, handleLayout, closeAnimation: onFinished };
+  return { animatedStyles, handleLayout, close: onFinished };
 };

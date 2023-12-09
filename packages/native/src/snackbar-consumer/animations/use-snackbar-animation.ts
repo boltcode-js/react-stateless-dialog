@@ -9,8 +9,7 @@ import { ComposedGesture, GestureType } from "react-native-gesture-handler";
 export type UseSnackbarAnimationResult = {
   animatedStyles: AnimatedStyle<ViewStyle>;
   handleLayout: (event: LayoutChangeEvent) => void;
-  // TODO: Close animation (animated: boolean) ??
-  closeAnimation: () => void;
+  close: (animated?: boolean) => void;
   gesture?: ComposedGesture | GestureType;
 };
 

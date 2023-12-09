@@ -23,5 +23,5 @@ export const useSnackbarNoneAnimation = (
     };
   }, []);
 
-  return { handleLayout, animatedStyles: {}, closeAnimation: onFinished };
+  return { handleLayout, animatedStyles: {}, close: onFinished };
 };

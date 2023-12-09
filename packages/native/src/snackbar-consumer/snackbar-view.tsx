@@ -43,8 +43,10 @@ export const SnackbarView = (props: GlobalBannerViewProps) => {
   const Component = snackbar.Component;
   const config = snackbar.config;
 
-  const { handleLayout, animatedStyles, closeAnimation, gesture } =
-    useSnackbarAnimation(config, onFinished);
+  const { handleLayout, animatedStyles, close, gesture } = useSnackbarAnimation(
+    config,
+    onFinished
+  );
 
   const insets = useSafeAreaInsets();
   const mainStyle = useMemo<StyleProp<ViewStyle>>(() => {
