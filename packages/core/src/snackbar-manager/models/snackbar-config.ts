@@ -2,7 +2,7 @@ import {
   HorizontalAlignement,
   RelativePosition,
   VerticalAlignement,
-} from "../../common";
+} from "../../common/common.models";
 
 export type SnackbarConfig = {
   /**

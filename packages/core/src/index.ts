@@ -48,9 +48,9 @@ export type {
   Size,
   Layout,
   SafeArea,
-} from "./common";
+} from "./common/common.models";
 export {
   getEffectiveSlideFromPosition,
-  getAbsoluteLayout,
-  getRelativeStartPosition,
-} from "./common";
+  getSlideStartPosition,
+} from "./common/slide-helpers";
+export { getAbsoluteLayout } from "./common/layout";

@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import {
   getEffectiveSlideFromPosition,
-  getRelativeStartPosition,
+  getSlideStartPosition,
   RelativePosition,
   SnackbarConfig,
 } from "@react-stateless-dialog/core";
@@ -69,14 +69,12 @@ export const useSnackbarSlideAnimation = (
 
   const swipeTranslation = useSharedValue(0);
 
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      transform: translateX
-        ? [{ translateX: offset.value + swipeTranslation.value }]
-        : [{ translateY: offset.value + swipeTranslation.value }],
-      opacity: offset.value === INITIAL_OFFSET ? 0 : 1,
-    };
-  });
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: translateX
+      ? [{ translateX: offset.value + swipeTranslation.value }]
+      : [{ translateY: offset.value + swipeTranslation.value }],
+    opacity: offset.value === INITIAL_OFFSET ? 0 : 1,
+  }));
 
   const getCloseAnimation = useCallback(
     (isDelayed: boolean) => {
@@ -119,10 +117,9 @@ export const useSnackbarSlideAnimation = (
 
   const handleLayout = useCallback(
     (event: LayoutChangeEvent) => {
-      console.log(`[${status.value}] OnLayout: `, event.nativeEvent.layout);
       layout.current = event.nativeEvent.layout;
 
-      const startPosition = getRelativeStartPosition(
+      const startPosition = getSlideStartPosition(
         slideFrom,
         config.vertical,
         config.horizontal,
@@ -146,9 +143,8 @@ export const useSnackbarSlideAnimation = (
     },
     [
       offset,
-      config.duration,
-      config.vertical,
-      config.horizontal,
+      config,
+      safearea,
       destroy,
       slideFrom,
       translateX,

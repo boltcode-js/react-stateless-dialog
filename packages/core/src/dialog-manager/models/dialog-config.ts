@@ -1,4 +1,4 @@
-import { RelativePosition } from "../../common";
+import { RelativePosition } from "../../common/common.models";
 
 export interface DialogConfig {
   /**
