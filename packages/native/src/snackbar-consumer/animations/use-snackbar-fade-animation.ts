@@ -7,8 +7,10 @@ import {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { UseSnackbarAnimationResult } from "./use-snackbar-animation";
+
+const ANIMATION_DURATION = 350;
 
 export const useSnackbarFadeAnimation = (
   config: SnackbarConfig,
@@ -16,27 +18,43 @@ export const useSnackbarFadeAnimation = (
 ): UseSnackbarAnimationResult => {
   const opacity = useSharedValue(0);
 
-  const handleLayout = useCallback(() => {
-    function handleFinished(finished?: boolean) {
+  const handleFinished = useMemo(() => {
+    return function (finished?: boolean) {
       "worklet";
       if (finished) {
         runOnJS(destroy)();
       }
-    }
+    };
+  }, [destroy]);
 
+  const handleLayout = useCallback(() => {
     opacity.value = withSequence(
-      withTiming(1, { duration: 300 }),
+      withTiming(1, { duration: ANIMATION_DURATION }),
       withDelay(
         config.duration,
-        withTiming(0, { duration: 300 }, handleFinished)
+        withTiming(0, { duration: ANIMATION_DURATION }, handleFinished)
       )
     );
   }, [opacity, config.duration, destroy]);
+
+  const close = useCallback(
+    (animated?: boolean) => {
+      if (animated) {
+        opacity.value = withTiming(
+          0,
+          { duration: ANIMATION_DURATION },
+          handleFinished
+        );
+      } else {
+        destroy();
+      }
+    },
+    [destroy]
+  );
 
   const animatedStyles = useAnimatedStyle(() => ({
     opacity: opacity.value,
   }));
 
-  // TODO: Close animation
-  return { animatedStyles, handleLayout, close: destroy };
+  return { animatedStyles, handleLayout, close };
 };

@@ -43,7 +43,7 @@ export interface DialogConfig {
   androidCancelOnClickBack: boolean;
 
   /**
-   * The dialog will be shown outside of the safeArea
+   * The dialog will be shown outside the safeArea
    */
   disableSafeArea: boolean;
 }
