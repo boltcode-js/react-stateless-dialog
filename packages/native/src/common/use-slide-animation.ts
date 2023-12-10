@@ -55,7 +55,7 @@ export type UseSlideAnimationArgs = {
   vertical: VerticalAlignement;
   horizontal: HorizontalAlignement;
   insideSafeArea: boolean;
-  destroy: () => void;
+  finish: () => void;
   autoCloseDelay?: number;
   gestureEnable: boolean;
   exitThreshold: number;
@@ -95,7 +95,7 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
   }));
 
   const getCloseAnimation = useCallback(
-    (isDelayed: boolean) => {
+    (isDelayed: boolean, callback?: () => void) => {
       if (isDelayed && !args.autoCloseDelay) {
         return null;
       }
@@ -103,7 +103,7 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
       function handleFinished(finished?: boolean) {
         "worklet";
         if (finished) {
-          runOnJS(args.destroy)();
+          runOnJS(callback || args.finish)();
         }
       }
 
@@ -134,7 +134,7 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
         return closeAnim;
       }
     },
-    [args.autoCloseDelay, args.destroy]
+    [args.autoCloseDelay, args.finish]
   );
 
   const isLayouted = useRef(false);
@@ -176,14 +176,17 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
   );
 
   const close = useCallback(
-    (animated?: boolean) => {
+    (animated?: boolean, callback?: () => void) => {
       if (status.value && animated) {
-        offset.value = getCloseAnimation(false);
+        offset.value = getCloseAnimation(false, callback);
       } else {
-        args.destroy();
+        args.finish();
+        if (callback) {
+          callback();
+        }
       }
     },
-    [getCloseAnimation, args.destroy]
+    [getCloseAnimation, args.finish]
   );
 
   let gesture: PanGesture;

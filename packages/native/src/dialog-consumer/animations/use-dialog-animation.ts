@@ -8,7 +8,7 @@ import { useDialogFadeAnimation } from "./use-dialog-fade-animation";
 export type UseDialogAnimationResult = {
   animatedStyle: AnimatedStyle<ViewStyle>;
   outsideViewStyle: AnimatedStyle<ViewStyle>;
-  close: (animated?: boolean) => void;
+  close: (animated?: boolean, callback?: () => void) => void;
   handleLayout?: (event: LayoutChangeEvent) => void;
   gesture?: ComposedGesture | GestureType;
 };

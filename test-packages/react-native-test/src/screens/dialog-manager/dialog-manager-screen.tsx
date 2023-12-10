@@ -12,7 +12,8 @@ export const DialogManagerScreen = () => {
       <Button
         title="Confirm dialog"
         onPress={async () => {
-          await DialogManager().push(ConfirmDialog, { message: 'Hello world' }).waitIgnoreCancel();
+          const res = await DialogManager().push(ConfirmDialog, { message: 'Hello world' }).waitIgnoreCancel();
+          console.log('Res: ', res);
         }}
       />
       <Button
@@ -30,7 +31,8 @@ export const DialogManagerScreen = () => {
       <Button
         title="Slide animation"
         onPress={async () => {
-          await DialogManager().push(ConfirmDialog, { message: 'Hello world' }, { animationType: 'slide', enableGesture: true }).waitIgnoreCancel();
+          const res = await DialogManager().push(ConfirmDialog, { message: 'Hello world' }, { animationType: 'slide', enableGesture: true }).waitIgnoreCancel();
+          console.log('Res: ', res);
         }}
       />
       <Button

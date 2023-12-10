@@ -97,9 +97,14 @@ export const DialogView = (props: DialogViewProps) => {
     close(true);
   }, [close]);
 
-  /*const handleConfirm = useCallback(() => {
-    close(true);
-  }, [close]);*/
+  const handleConfirm = useCallback(
+    (result: any) => {
+      close(true, () => {
+        onConfirm(result);
+      });
+    },
+    [close]
+  );
 
   return (
     <View style={mainStyle}>
@@ -112,7 +117,12 @@ export const DialogView = (props: DialogViewProps) => {
       </TouchableWithoutFeedback>
       <GestureWrapper>
         <Animated.View style={animatedStyle} onLayout={handleLayout}>
-          <Component key={dialog.id} {...context} onCancel={handleCancel} />
+          <Component
+            key={dialog.id}
+            {...context}
+            onCancel={handleCancel}
+            onConfirm={handleConfirm}
+          />
         </Animated.View>
       </GestureWrapper>
     </View>
