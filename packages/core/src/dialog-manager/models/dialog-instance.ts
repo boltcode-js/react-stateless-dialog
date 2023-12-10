@@ -11,4 +11,5 @@ export type DialogInstance<Args extends any, Result extends any> = {
   context: DialogContext<Args, Result>;
   config?: DialogConfig;
   interceptor?: (result: Result) => boolean | Promise<boolean>;
+  isClosing: boolean;
 };

@@ -6,7 +6,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import Animated from "react-native-reanimated";
 import { useDialogAnimation } from "./animations/use-dialog-animation";
 import { DialogInstance } from "@react-stateless-dialog/core";
@@ -68,7 +68,7 @@ const useCancelOnBackButton = (
 export const DialogView = (props: DialogViewProps) => {
   const { dialog } = props;
   const { Component, config, context } = dialog;
-  const { onCancel, onConfirm } = context;
+  const { onCancel, onConfirm, destroy } = context;
 
   const { backgroundColor, quitOnTouchOutside, androidCancelOnClickBack } =
     config;
@@ -89,40 +89,56 @@ export const DialogView = (props: DialogViewProps) => {
   }, [insets]);
 
   const { animatedStyle, outsideViewStyle, handleLayout, close, gesture } =
-    useDialogAnimation(config, onCancel);
+    useDialogAnimation(config, destroy);
   useCancelOnBackButton(androidCancelOnClickBack, onCancel);
 
-  const GestureWrapper = useGestureWrapper(gesture);
-  const handleCancel = useCallback(() => {
-    close(true);
-  }, [close]);
+  useEffect(() => {
+    if (dialog.isClosing) {
+      close(true);
+    }
+  }, [dialog.isClosing]);
 
-  const handleConfirm = useCallback(
-    (result: any) => {
-      close(true, () => {
-        onConfirm(result);
-      });
-    },
-    [close]
-  );
+  // TODO: This should be a component, not a hook
+  const GestureWrapper = useGestureWrapper(gesture);
+
+  // TODO: Use Layout animation from reanimated:
+  // https://docs.swmansion.com/react-native-reanimated/docs/layout-animations/layout-transitions
+  /*const AnimatedComponent = useMemo(() => {
+    class ClazzCompo extends React.Component<DialogProps<any, any>, any> {
+      constructor(props: DialogProps<any, any>) {
+        super(props);
+      }
+
+      render() {
+        return <Component {...this.props} />;
+      }
+    }
+    return Animated.createAnimatedComponent(ClazzCompo);
+  }, [Component]);
+  return <AnimatedComponent
+      entering={SlideInRight}
+      exiting={SlideOutLeft}
+      {...context}
+  />*/
 
   return (
     <View style={mainStyle}>
       <TouchableWithoutFeedback
-        onPress={quitOnTouchOutside ? handleCancel : undefined}
+        onPress={quitOnTouchOutside ? onCancel : undefined}
       >
         <Animated.View
           style={[OUTSIDE_VIEW_STYLE, { backgroundColor }, outsideViewStyle]}
         />
       </TouchableWithoutFeedback>
       <GestureWrapper>
-        <Animated.View style={animatedStyle} onLayout={handleLayout}>
-          <Component
-            key={dialog.id}
-            {...context}
-            onCancel={handleCancel}
-            onConfirm={handleConfirm}
-          />
+        <Animated.View
+          style={[
+            animatedStyle,
+            config.flex ? { flex: 1, backgroundColor: "blue" } : undefined,
+          ]}
+          onLayout={handleLayout}
+        >
+          <Component key={dialog.id} {...context} />
         </Animated.View>
       </GestureWrapper>
     </View>

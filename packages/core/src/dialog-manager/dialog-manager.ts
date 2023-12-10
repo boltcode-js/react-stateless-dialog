@@ -36,89 +36,111 @@ const callInterceptor = async <T extends any>(
   }
 };
 
-export const useDialogManager = create<DialogManagerState>((set, get) => ({
-  nextId: 1,
-  dialogs: [],
-  cancelAll() {
-    const dialogs = get().dialogs;
-    for (let i = dialogs.length - 1; i >= 0; i--) {
-      dialogs[i].context.onCancel();
-    }
-  },
-  push<Args extends any, Result extends any>(
-    dialog: DialogComponent<Args, Result>,
-    args: Args,
-    partialConfig?: Partial<DialogConfig>
-  ) {
-    const config: DialogConfig = deepMerge(
-      {},
-      getGlobalConfig().dialog.defaultConfig,
-      dialog,
-      partialConfig
-    );
+export const useDialogManager = create<DialogManagerState>((set, get) => {
+  const destroy = (id: number) => {
+    set((state) => ({
+      dialogs: state.dialogs.filter((x) => x.id !== id),
+    }));
+  };
 
-    const closeDialog = (id: number) =>
-      set((state) => ({ dialogs: state.dialogs.filter((x) => x.id !== id) }));
-    const dialogId = get().nextId;
-
-    let resolvePromise: (value: Result | PromiseLike<Result>) => void;
-    let rejectPromise: (reason?: any) => void;
-    const promise = new Promise<Result>((resolve, reject) => {
-      resolvePromise = resolve;
-      rejectPromise = reject;
+  const close = (id: number) => {
+    set((state) => {
+      const dialogIndex = state.dialogs.findIndex((x) => x.id === id);
+      if (dialogIndex >= 0) {
+        const dialogs = [...state.dialogs];
+        dialogs[dialogIndex] = { ...dialogs[dialogIndex], isClosing: true };
+        return { dialogs };
+      }
+      return {};
     });
+  };
 
-    let interceptor: (result: Result) => boolean | Promise<boolean>;
-    const dialogInstance: DialogInstance<Args, Result> = {
-      id: dialogId,
-      Component: dialog,
-      context: {
-        args,
-        onConfirm: (result: Result) => {
-          callInterceptor(result, interceptor).then((next) => {
-            if (next) {
-              resolvePromise(result);
-              closeDialog(dialogId);
-            }
+  return {
+    nextId: 1,
+    dialogs: [],
+    cancelAll() {
+      const dialogs = get().dialogs;
+      for (let i = dialogs.length - 1; i >= 0; i--) {
+        dialogs[i].context.onCancel();
+      }
+    },
+    push<Args extends any, Result extends any>(
+      dialog: DialogComponent<Args, Result>,
+      args: Args,
+      partialConfig?: Partial<DialogConfig>
+    ) {
+      const config: DialogConfig = deepMerge(
+        {},
+        getGlobalConfig().dialog.defaultConfig,
+        dialog,
+        partialConfig
+      );
+
+      const dialogId = get().nextId;
+
+      let resolvePromise: (value: Result | PromiseLike<Result>) => void;
+      let rejectPromise: (reason?: any) => void;
+      const promise = new Promise<Result>((resolve, reject) => {
+        resolvePromise = resolve;
+        rejectPromise = reject;
+      });
+
+      let interceptor: (result: Result) => boolean | Promise<boolean>;
+      const dialogInstance: DialogInstance<Args, Result> = {
+        id: dialogId,
+        Component: dialog,
+        context: {
+          args,
+          onConfirm: (result: Result) => {
+            callInterceptor(result, interceptor).then((next) => {
+              if (next) {
+                resolvePromise(result);
+                close(dialogId);
+              }
+            });
+          },
+          onCancel: () => {
+            rejectPromise();
+            close(dialogId);
+          },
+          destroy: () => {
+            destroy(dialogId);
+          },
+        },
+        config: config,
+        isClosing: false,
+      };
+
+      const handler: DialogHandler<Result> = {
+        id: dialogId,
+        confirm: dialogInstance.context.onConfirm,
+        cancel: dialogInstance.context.onCancel,
+        waitPromise: () => promise,
+        waitIgnoreCancel: () => {
+          return new Promise((resolve) => {
+            promise.then(resolve).catch(() => resolve(undefined));
           });
         },
-        onCancel: () => {
-          rejectPromise();
-          closeDialog(dialogId);
-        },
-      },
-      config: config,
-    };
+        setInterceptor: undefined,
+      };
+      handler.setInterceptor = (_i) => {
+        interceptor = _i;
+        return handler;
+      };
 
-    const handler: DialogHandler<Result> = {
-      id: dialogId,
-      confirm: dialogInstance.context.onConfirm,
-      cancel: dialogInstance.context.onCancel,
-      waitPromise: () => promise,
-      waitIgnoreCancel: () => {
-        return new Promise((resolve) => {
-          promise.then(resolve).catch(() => resolve(undefined));
-        });
-      },
-      setInterceptor: undefined,
-    };
-    handler.setInterceptor = (_i) => {
-      interceptor = _i;
+      const pushMiddleware = getGlobalConfig().dialog.pushDialogMiddleware;
+      if (pushMiddleware) {
+        pushMiddleware();
+      }
+
+      set((state) => ({
+        nextId: dialogId + 1,
+        dialogs: [...state.dialogs, dialogInstance],
+      }));
       return handler;
-    };
-
-    const pushMiddleware = getGlobalConfig().dialog.pushDialogMiddleware;
-    if (pushMiddleware) {
-      pushMiddleware();
-    }
-
-    set((state) => ({
-      nextId: dialogId + 1,
-      dialogs: [...state.dialogs, dialogInstance],
-    }));
-    return handler;
-  },
-}));
+    },
+  };
+});
 
 export const DialogManager = (): IDialogManager => {
   return useDialogManager.getState();

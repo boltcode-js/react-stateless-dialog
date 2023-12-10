@@ -22,6 +22,11 @@ export interface DialogConfig {
   horizontal: "left" | "center" | "right" | "stretch";
 
   /**
+   * If true the parent container of the dialog will be flex
+   */
+  flex: boolean;
+
+  /**
    * When animationType is set on "slide", this defines the initial position of the slide.
    * If not defined the default value is calculated using vertical & horizontal and fallback to bottom.
    */
@@ -58,6 +63,7 @@ export const DIALOG_DEFAULT_CONFIG: DialogConfig = {
   animationType: "none",
   horizontal: "center",
   vertical: "center",
+  flex: false,
   slideFromPosition: undefined,
   enableGesture: false,
   quitOnTouchOutside: false,

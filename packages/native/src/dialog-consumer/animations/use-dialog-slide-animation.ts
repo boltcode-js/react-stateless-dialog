@@ -9,7 +9,7 @@ export const useDialogSlideAnimation = (
 ): UseDialogAnimationResult => {
   const { animatedStyle, close, gesture, handleLayout, progress } =
     useSlideAnimation({
-      finish: destroy,
+      destroy,
       vertical: config.vertical,
       horizontal: config.horizontal,
       slideFromPosition: config.slideFromPosition,

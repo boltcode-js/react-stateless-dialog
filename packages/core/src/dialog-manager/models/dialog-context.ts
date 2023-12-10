@@ -5,6 +5,7 @@ export type DialogContext<Args extends any, Result extends any> = {
   args: Args;
   onConfirm: (result: Result) => void;
   onCancel: () => void;
+  destroy: () => void;
 };
 
 /**

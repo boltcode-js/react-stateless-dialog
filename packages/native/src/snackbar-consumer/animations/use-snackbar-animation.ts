@@ -26,7 +26,7 @@ export const useSnackbarAnimation = (
       defaultSlideFromPosition: "top",
       autoCloseDelay: config.duration,
       gestureEnable: config.enableGesture,
-      finish: destroy,
+      destroy,
       exitThreshold: 0.2,
     });
   } else if (config.animationType === "fade") {
