@@ -1,19 +1,32 @@
 import {
   BackHandler,
   Platform,
+  StyleProp,
   TouchableWithoutFeedback,
   View,
   ViewStyle,
 } from "react-native";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import Animated from "react-native-reanimated";
-import { useModalAnimation } from "./animations/use-modal-animation";
-import { DialogConfig } from "@react-stateless-dialog/core";
+import { useDialogAnimation } from "./animations/use-dialog-animation";
+import { DialogInstance } from "@react-stateless-dialog/core";
+import { horizontalToFlexAlign, verticalToFlexAlign } from "../common/utils";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useGestureWrapper } from "../common/use-gesture-wrapper";
 
 export type DialogViewProps = {
-  config: DialogConfig;
-  onCancel: () => void;
-  children: any;
+  dialog: DialogInstance<any, any>;
+};
+
+const MAIN_VIEW_STYLE: ViewStyle = {
+  position: "absolute",
+  top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
+  zIndex: 0,
+  elevation: 0,
+  flex: 1,
 };
 
 const OUTSIDE_VIEW_STYLE: ViewStyle = {
@@ -35,13 +48,6 @@ const useCancelOnBackButton = (
   }
 
   /* eslint-disable react-hooks/rules-of-hooks */
-  const initialValue = useRef(androidCancelOnClickBack);
-  if (initialValue.current !== androidCancelOnClickBack) {
-    throw new Error(
-      "You can't change the androidCancelOnClickBack of a Modal during it's lifecycle"
-    );
-  }
-
   useEffect(() => {
     function cancelOnBack() {
       if (androidCancelOnClickBack) {
@@ -56,40 +62,59 @@ const useCancelOnBackButton = (
       sub.remove();
     };
   }, [androidCancelOnClickBack, onCancel]);
-
   /* eslint-enable react-hooks/rules-of-hooks */
 };
 
 export const DialogView = (props: DialogViewProps) => {
-  const { onCancel, config, children } = props;
-  const {
-    backgroundColor,
-    animationType,
-    quitOnTouchOutside,
-    androidCancelOnClickBack,
-    keyboardBehavior,
-    disableSafeArea,
-  } = config;
+  const { dialog } = props;
+  const { Component, config, context } = dialog;
+  const { onCancel, onConfirm } = context;
 
-  const outsideViewStyle = useMemo(
-    () => [OUTSIDE_VIEW_STYLE, { backgroundColor }],
-    [backgroundColor]
-  );
-  const animatedStyles = useModalAnimation(
-    animationType,
-    keyboardBehavior,
-    disableSafeArea
-  );
+  const { backgroundColor, quitOnTouchOutside, androidCancelOnClickBack } =
+    config;
+
+  const insets = useSafeAreaInsets();
+  const mainStyle = useMemo<StyleProp<ViewStyle>>(() => {
+    return [
+      MAIN_VIEW_STYLE,
+      {
+        paddingTop: config.disableSafeArea ? 0 : insets.top,
+        paddingBottom: config.disableSafeArea ? 0 : insets.bottom,
+        paddingStart: config.disableSafeArea ? 0 : insets.left,
+        paddingEnd: config.disableSafeArea ? 0 : insets.right,
+        alignItems: horizontalToFlexAlign(config.horizontal),
+        justifyContent: verticalToFlexAlign(config.vertical),
+      },
+    ];
+  }, [insets]);
+
+  const { animatedStyle, outsideViewStyle, handleLayout, close, gesture } =
+    useDialogAnimation(config, onCancel);
   useCancelOnBackButton(androidCancelOnClickBack, onCancel);
 
+  const GestureWrapper = useGestureWrapper(gesture);
+  const handleCancel = useCallback(() => {
+    close(true);
+  }, [close]);
+
+  /*const handleConfirm = useCallback(() => {
+    close(true);
+  }, [close]);*/
+
   return (
-    <Animated.View style={animatedStyles}>
+    <View style={mainStyle}>
       <TouchableWithoutFeedback
-        onPress={quitOnTouchOutside ? onCancel : undefined}
+        onPress={quitOnTouchOutside ? handleCancel : undefined}
       >
-        <View style={outsideViewStyle} />
+        <Animated.View
+          style={[OUTSIDE_VIEW_STYLE, { backgroundColor }, outsideViewStyle]}
+        />
       </TouchableWithoutFeedback>
-      {children}
-    </Animated.View>
+      <GestureWrapper>
+        <Animated.View style={animatedStyle} onLayout={handleLayout}>
+          <Component key={dialog.id} {...context} onCancel={handleCancel} />
+        </Animated.View>
+      </GestureWrapper>
+    </View>
   );
 };

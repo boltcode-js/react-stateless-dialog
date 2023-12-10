@@ -28,6 +28,11 @@ export interface DialogConfig {
   slideFromPosition: RelativePosition | undefined;
 
   /**
+   * If true, you can use swipe gesture to close the dialog (only work with slide animation).
+   */
+  enableGesture: boolean;
+
+  /**
    * How the content of the modal should react when keyboard open
    */
   keyboardBehavior: "padding" | undefined;
@@ -54,6 +59,7 @@ export const DIALOG_DEFAULT_CONFIG: DialogConfig = {
   horizontal: "center",
   vertical: "center",
   slideFromPosition: undefined,
+  enableGesture: false,
   quitOnTouchOutside: false,
   keyboardBehavior: undefined,
   androidCancelOnClickBack: false,

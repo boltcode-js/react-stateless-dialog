@@ -2,14 +2,13 @@ import React, { useCallback, useMemo } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import {
-  SnackbarConfig,
   SnackbarInstance,
   useSnackbarManager,
 } from "@react-stateless-dialog/core";
 import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { FlexAlignType } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 import { useGestureWrapper } from "../common/use-gesture-wrapper";
+import { horizontalToFlexAlign, verticalToFlexAlign } from "../common/utils";
 
 export type SnackbarViewProps = {
   snackbar: SnackbarInstance<any>;
@@ -23,23 +22,6 @@ const MAIN_VIEW_STYLE: ViewStyle = {
   left: 0,
 };
 
-const horizontalToFlexAlign = (
-  align: SnackbarConfig["horizontal"]
-): FlexAlignType => {
-  if (align === "stretch") return "stretch";
-  else if (align === "left") return "flex-start";
-  else if (align === "right") return "flex-end";
-  else return "center";
-};
-
-const verticalToFlexAlign = (
-  align: SnackbarConfig["vertical"]
-): ViewStyle["justifyContent"] => {
-  if (align === "top") return "flex-start";
-  else if (align === "bottom") return "flex-end";
-  else return "center";
-};
-
 export const SnackbarView = (props: SnackbarViewProps) => {
   const { snackbar } = props;
 
@@ -50,7 +32,7 @@ export const SnackbarView = (props: SnackbarViewProps) => {
     useSnackbarManager.getState().destroy(snackbar.id);
   }, [snackbar.id]);
 
-  const { handleLayout, animatedStyles, close, gesture } = useSnackbarAnimation(
+  const { handleLayout, animatedStyle, close, gesture } = useSnackbarAnimation(
     config,
     destroy
   );
@@ -89,7 +71,7 @@ export const SnackbarView = (props: SnackbarViewProps) => {
     <View style={mainStyle} pointerEvents="box-none">
       <GestureWrapper>
         <Animated.View
-          style={animatedStyles}
+          style={animatedStyle}
           onLayout={handleLayout}
           pointerEvents="box-none"
         >

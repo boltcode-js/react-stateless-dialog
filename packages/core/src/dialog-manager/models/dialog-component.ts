@@ -1,5 +1,5 @@
 import React from "react";
-import { DialogContext } from "./dialog-context";
+import { DialogProps } from "./dialog-context";
 import { DialogConfig } from "./dialog-config";
 
 /**
@@ -7,5 +7,5 @@ import { DialogConfig } from "./dialog-config";
  */
 export interface DialogComponent<Args extends any, Result extends any>
   extends Partial<DialogConfig> {
-  (props: DialogContext<Args, Result>): React.JSX.Element;
+  (props: DialogProps<Args, Result>): React.JSX.Element;
 }

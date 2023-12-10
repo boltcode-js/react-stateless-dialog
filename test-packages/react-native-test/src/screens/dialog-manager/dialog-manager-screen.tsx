@@ -4,6 +4,7 @@ import { DialogManager } from '@react-stateless-dialog/core';
 import { ConfirmDialog } from './dialogs/confirm-dialog';
 import { KeyboardDialog } from './dialogs/keyboard-dialog';
 import { FullscreenDialog } from './dialogs/fullscreen-dialog';
+import { SelectDialog } from './dialogs/select-dialog';
 
 export const DialogManagerScreen = () => {
   return (
@@ -29,7 +30,7 @@ export const DialogManagerScreen = () => {
       <Button
         title="Slide animation"
         onPress={async () => {
-          await DialogManager().push(ConfirmDialog, { message: 'Hello world' }, { animationType: 'slide' }).waitIgnoreCancel();
+          await DialogManager().push(ConfirmDialog, { message: 'Hello world' }, { animationType: 'slide', enableGesture: true }).waitIgnoreCancel();
         }}
       />
       <Button
@@ -48,6 +49,12 @@ export const DialogManagerScreen = () => {
         title="Fullscren outside safearea"
         onPress={async () => {
           await DialogManager().push(FullscreenDialog, null, { disableSafeArea: true }).waitIgnoreCancel();
+        }}
+      />
+      <Button
+        title="Select dialog"
+        onPress={async () => {
+          await DialogManager().push(SelectDialog, null, { disableSafeArea: true }).waitIgnoreCancel();
         }}
       />
     </View>

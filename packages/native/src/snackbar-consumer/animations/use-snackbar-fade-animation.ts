@@ -52,9 +52,9 @@ export const useSnackbarFadeAnimation = (
     [destroy]
   );
 
-  const animatedStyles = useAnimatedStyle(() => ({
+  const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
   }));
 
-  return { animatedStyles, handleLayout, close };
+  return { animatedStyle, handleLayout, close };
 };

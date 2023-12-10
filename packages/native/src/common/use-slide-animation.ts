@@ -2,6 +2,7 @@ import {
   cancelAnimation,
   runOnJS,
   useAnimatedStyle,
+  useDerivedValue,
   useSharedValue,
   withDelay,
   withSequence,
@@ -21,7 +22,7 @@ import {
   VerticalAlignement,
 } from "@react-stateless-dialog/core";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Gesture } from "react-native-gesture-handler";
+import { Gesture, PanGesture } from "react-native-gesture-handler";
 
 const ANIMATION_DURATION = 300;
 const INITIAL_OFFSET = -100000;
@@ -56,6 +57,8 @@ export type UseSlideAnimationArgs = {
   insideSafeArea: boolean;
   destroy: () => void;
   autoCloseDelay?: number;
+  gestureEnable: boolean;
+  exitThreshold: number;
 };
 
 export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
@@ -69,14 +72,22 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
   const status = useSharedValue<SlideStatus>(undefined);
   const translateX = slideFrom === "left" || slideFrom === "right";
   const layout = useRef<LayoutRectangle>(undefined);
-  const initialOffset = useRef<number>(undefined);
+  const initialOffset = useSharedValue<number>(undefined);
   const offset = useSharedValue(INITIAL_OFFSET);
   const winSize = useWindowDimensions();
   const safearea = useSafeAreaInsets();
 
   const swipeTranslation = useSharedValue(0);
+  const progress = useDerivedValue(() => {
+    if (initialOffset.value === null || initialOffset.value === undefined) {
+      return 0;
+    }
+    const absInitial = Math.abs(initialOffset.value);
+    const absOffset = Math.abs(offset.value + swipeTranslation.value);
+    return (absInitial - absOffset) / absInitial;
+  });
 
-  const animatedStyles = useAnimatedStyle(() => ({
+  const animatedStyle = useAnimatedStyle(() => ({
     transform: translateX
       ? [{ translateX: offset.value + swipeTranslation.value }]
       : [{ translateY: offset.value + swipeTranslation.value }],
@@ -97,7 +108,7 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
       }
 
       const closeAnim = withTiming(
-        initialOffset.current,
+        initialOffset.value,
         { duration: ANIMATION_DURATION },
         handleFinished
       );
@@ -112,7 +123,7 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
               }
             }),
             withTiming(
-              initialOffset.current,
+              initialOffset.value,
               { duration: ANIMATION_DURATION },
               handleFinished
             )
@@ -149,8 +160,9 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
       );
 
       status.value = "starting";
-      initialOffset.current = translateX ? startPosition.x : startPosition.y;
-      offset.value = initialOffset.current;
+      const tmpInitialOffset = translateX ? startPosition.x : startPosition.y;
+      initialOffset.value = tmpInitialOffset;
+      offset.value = tmpInitialOffset;
       offset.value = withSequence(
         ...[
           withTiming(0, { duration: ANIMATION_DURATION }, () => {
@@ -171,78 +183,81 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
         args.destroy();
       }
     },
-    [initialOffset, args.destroy]
+    [getCloseAnimation, args.destroy]
   );
 
-  const direction = slideFrom;
-  const gesture = Gesture.Pan()
-    .runOnJS(true)
-    .onStart(() => {
-      if (status.value !== "waiting") {
-        return;
-      }
-      cancelAnimation(offset);
-    })
-    .onUpdate((e) => {
-      if (status.value !== "waiting") {
-        return;
-      }
-
-      const translation = selectAxis(direction, {
-        x: e.translationX,
-        y: e.translationY,
-      });
-
-      if (isSameDirection(direction, translation)) {
-        swipeTranslation.value = translation;
-      } else {
-        swipeTranslation.value = translation / 25;
-      }
-    })
-    .onEnd((e) => {
-      if (status.value !== "waiting") {
-        return;
-      }
-
-      const translation = selectAxis(direction, {
-        x: e.translationX,
-        y: e.translationY,
-      });
-
-      const size = selectAxis(direction, {
-        x: layout.current.width,
-        y: layout.current.height,
-      });
-
-      if (
-        isSameDirection(direction, translation) &&
-        Math.abs(translation) > size * 0.2
-      ) {
-        swipeTranslation.value = 0;
-        offset.value = offset.value + translation;
-        offset.value = getCloseAnimation(false);
-      } else {
-        offset.value = offset.value + swipeTranslation.value;
-        swipeTranslation.value = 0;
-
-        function handleRestore() {
-          if (args.autoCloseDelay) {
-            offset.value = getCloseAnimation(true);
-          }
+  let gesture: PanGesture;
+  if (args.gestureEnable) {
+    const direction = slideFrom;
+    gesture = Gesture.Pan()
+      .runOnJS(true)
+      .onStart(() => {
+        if (status.value !== "waiting") {
+          return;
+        }
+        cancelAnimation(offset);
+      })
+      .onUpdate((e) => {
+        if (status.value !== "waiting") {
+          return;
         }
 
-        offset.value = withTiming(
-          0,
-          {
-            duration: ANIMATION_DURATION * (1 - translation / size),
-          },
-          function () {
-            "worklet";
-            runOnJS(handleRestore)();
-          }
-        );
-      }
-    });
+        const translation = selectAxis(direction, {
+          x: e.translationX,
+          y: e.translationY,
+        });
 
-  return { animatedStyles, handleLayout, close, gesture };
+        if (isSameDirection(direction, translation)) {
+          swipeTranslation.value = translation;
+        } else {
+          swipeTranslation.value = translation / 25;
+        }
+      })
+      .onEnd((e) => {
+        if (status.value !== "waiting") {
+          return;
+        }
+
+        const translation = selectAxis(direction, {
+          x: e.translationX,
+          y: e.translationY,
+        });
+
+        const size = selectAxis(direction, {
+          x: layout.current.width,
+          y: layout.current.height,
+        });
+
+        if (
+          isSameDirection(direction, translation) &&
+          Math.abs(translation) > size * args.exitThreshold
+        ) {
+          swipeTranslation.value = 0;
+          offset.value = offset.value + translation;
+          offset.value = getCloseAnimation(false);
+        } else {
+          offset.value = offset.value + swipeTranslation.value;
+          swipeTranslation.value = 0;
+
+          function handleRestore() {
+            if (args.autoCloseDelay) {
+              offset.value = getCloseAnimation(true);
+            }
+          }
+
+          offset.value = withTiming(
+            0,
+            {
+              duration: ANIMATION_DURATION,
+            },
+            function () {
+              "worklet";
+              runOnJS(handleRestore)();
+            }
+          );
+        }
+      });
+  }
+
+  return { animatedStyle, handleLayout, close, gesture, progress };
 };

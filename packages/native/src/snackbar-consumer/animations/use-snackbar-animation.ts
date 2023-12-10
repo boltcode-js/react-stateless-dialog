@@ -7,7 +7,7 @@ import { ComposedGesture, GestureType } from "react-native-gesture-handler";
 import { useSlideAnimation } from "../../common/use-slide-animation";
 
 export type UseSnackbarAnimationResult = {
-  animatedStyles: AnimatedStyle<ViewStyle>;
+  animatedStyle: AnimatedStyle<ViewStyle>;
   handleLayout: (event: LayoutChangeEvent) => void;
   close: (animated?: boolean) => void;
   gesture?: ComposedGesture | GestureType;
@@ -25,7 +25,9 @@ export const useSnackbarAnimation = (
       slideFromPosition: config.slideFromPosition,
       defaultSlideFromPosition: "top",
       autoCloseDelay: config.duration,
+      gestureEnable: config.enableGesture,
       destroy,
+      exitThreshold: 0.2,
     });
   } else if (config.animationType === "fade") {
     return useSnackbarFadeAnimation(config, destroy);
