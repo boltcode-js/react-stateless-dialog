@@ -1,4 +1,8 @@
-export type SwipeDirection = "right" | "left" | "up" | "down";
+import {
+  HorizontalAlignement,
+  RelativePosition,
+  VerticalAlignement,
+} from "../../common/common.models";
 
 export type SnackbarConfig = {
   /**
@@ -9,12 +13,12 @@ export type SnackbarConfig = {
   /**
    * The vertical position of the snackbar
    */
-  vertical: "top" | "center" | "bottom";
+  vertical: VerticalAlignement;
 
   /**
    * The horizontal position of the snackbar
    */
-  horizontal: "left" | "center" | "right" | "stretch";
+  horizontal: HorizontalAlignement;
 
   /**
    * The animation of the snackbar
@@ -22,15 +26,19 @@ export type SnackbarConfig = {
   animationType: "slide" | "fade" | "none";
 
   /**
+   * This defines the initial position of the slide animation
+   */
+  slideFromPosition: RelativePosition | undefined;
+
+  /**
+   * If true, you can use swipe gesture to close the snackbar (only work with slide animation).
+   */
+  enableGesture: boolean;
+
+  /**
    * If true, the snackbar will be contained inside the SafeArea
    */
   insideSafeArea: boolean;
-
-  /**
-   * If true, you can use swipe gesture to close the snackbar.
-   * If enableGesture is a SwipeDirection, override the default direction to swipe.
-   */
-  enableGesture: boolean | SwipeDirection;
 };
 
 export const SNACKBAR_DEFAULT_CONFIG: SnackbarConfig = {
@@ -38,6 +46,7 @@ export const SNACKBAR_DEFAULT_CONFIG: SnackbarConfig = {
   vertical: "top",
   horizontal: "center",
   animationType: "none",
+  slideFromPosition: undefined,
   insideSafeArea: false,
   enableGesture: false,
 };

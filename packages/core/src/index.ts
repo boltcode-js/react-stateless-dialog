@@ -26,10 +26,7 @@ export {
   SnackbarManager,
   useSnackbarManager,
 } from "./snackbar-manager/snackbar-manager";
-export type {
-  SnackbarConfig,
-  SwipeDirection,
-} from "./snackbar-manager/models/snackbar-config";
+export type { SnackbarConfig } from "./snackbar-manager/models/snackbar-config";
 export { SNACKBAR_DEFAULT_CONFIG } from "./snackbar-manager/models/snackbar-config";
 export type { SnackbarInstance } from "./snackbar-manager/models/snackbar-instance";
 export type {
@@ -43,3 +40,17 @@ export { getGlobalConfig } from "./config/global-config";
 export { overrideStatelessDialogConfig } from "./config/stateless-dialog-config";
 export { invertColor } from "./utils/utils";
 export type { StatelessDialogConfig } from "./config/stateless-dialog-config";
+export type {
+  RelativePosition,
+  HorizontalAlignement,
+  VerticalAlignement,
+  Position,
+  Size,
+  Layout,
+  SafeArea,
+} from "./common/common.models";
+export {
+  getEffectiveSlideFromPosition,
+  getSlideStartPosition,
+} from "./common/slide-helpers";
+export { getAbsoluteLayout } from "./common/layout";

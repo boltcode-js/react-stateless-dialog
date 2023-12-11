@@ -24,7 +24,7 @@ export interface ISnackbarManager {
 export interface ISnackbarManagerState extends ISnackbarManager {
   nextId: number;
   snackbars: SnackbarInstance<any>[];
-  destroyFirst: () => void;
+  destroy: (id: number) => void;
 }
 
 export const useSnackbarManager = create<ISnackbarManagerState>((set, get) => {
@@ -54,7 +54,7 @@ export const useSnackbarManager = create<ISnackbarManagerState>((set, get) => {
       context: {
         args,
         config,
-        onClose: () => {
+        destroy: () => {
           closeSnackbar(snackbarId);
         },
       },
@@ -82,12 +82,10 @@ export const useSnackbarManager = create<ISnackbarManagerState>((set, get) => {
         config
       );
     },
-    destroyFirst: () => {
-      if (get().snackbars.length > 0) {
-        set((old) => ({
-          snackbars: old.snackbars.filter((_b, i) => !!i),
-        }));
-      }
+    destroy: (id: number) => {
+      set((old) => ({
+        snackbars: old.snackbars.filter((snack) => snack.id !== id),
+      }));
     },
   };
 });

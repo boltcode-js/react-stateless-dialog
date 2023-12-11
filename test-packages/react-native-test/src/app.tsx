@@ -19,6 +19,7 @@ const statelessDialogConfig = overrideStatelessDialogConfig(StatelessDialogConfi
     DefaultSnackbar: BannerSnackbar,
     defaultConfig: {
       enableGesture: true,
+      duration: 20000,
     },
   },
 });

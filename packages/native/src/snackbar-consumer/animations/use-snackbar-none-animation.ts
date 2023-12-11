@@ -1,17 +1,18 @@
 import { SnackbarConfig } from "@react-stateless-dialog/core";
 import { useCallback, useEffect } from "react";
+import { UseSnackbarAnimationResult } from "./use-snackbar-animation";
 
 export const useSnackbarNoneAnimation = (
   config: SnackbarConfig,
-  onFinished: () => void
-) => {
+  destroy: () => void
+): UseSnackbarAnimationResult => {
   let timeout: NodeJS.Timeout;
   const handleLayout = useCallback(() => {
     timeout = setTimeout(() => {
-      onFinished();
+      destroy();
       timeout = undefined;
     }, config.duration);
-  }, [config.duration, onFinished]);
+  }, [config.duration, destroy]);
 
   useEffect(() => {
     return () => {
@@ -22,5 +23,5 @@ export const useSnackbarNoneAnimation = (
     };
   }, []);
 
-  return { handleLayout };
+  return { handleLayout, animatedStyle: {}, close: destroy };
 };
