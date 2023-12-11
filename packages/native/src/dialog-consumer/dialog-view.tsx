@@ -1,13 +1,14 @@
 import {
   BackHandler,
   Platform,
-  StyleProp,
   TouchableWithoutFeedback,
-  View,
   ViewStyle,
 } from "react-native";
 import React, { useEffect, useMemo } from "react";
-import Animated from "react-native-reanimated";
+import Animated, {
+  useAnimatedKeyboard,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import { useDialogAnimation } from "./animations/use-dialog-animation";
 import { DialogInstance } from "@react-stateless-dialog/core";
 import { horizontalToFlexAlign, verticalToFlexAlign } from "../common/utils";
@@ -74,24 +75,38 @@ export const DialogView = (props: DialogViewProps) => {
     config;
 
   const insets = useSafeAreaInsets();
-  const mainStyle = useMemo<StyleProp<ViewStyle>>(
-    () => [
-      MAIN_VIEW_STYLE,
-      {
-        paddingTop: config.disableSafeArea ? 0 : insets.top,
-        paddingBottom: config.disableSafeArea ? 0 : insets.bottom,
-        paddingStart: config.disableSafeArea ? 0 : insets.left,
-        paddingEnd: config.disableSafeArea ? 0 : insets.right,
-        alignItems: horizontalToFlexAlign(config.horizontal),
-        justifyContent: verticalToFlexAlign(config.vertical),
-      },
-    ],
-    [insets]
+  const keyboard = useAnimatedKeyboard();
+  const fixedMainStyle = useMemo<ViewStyle>(
+    () => ({
+      paddingTop: config.disableSafeArea ? 0 : insets.top,
+      paddingStart: config.disableSafeArea ? 0 : insets.left,
+      paddingEnd: config.disableSafeArea ? 0 : insets.right,
+      alignItems: horizontalToFlexAlign(config.horizontal),
+      justifyContent: verticalToFlexAlign(config.vertical),
+    }),
+    [config, insets]
   );
 
+  const animatedMainStyle = useAnimatedStyle(() => ({
+    paddingBottom:
+      (config.disableSafeArea ? 0 : insets.bottom) +
+      (config.keyboardBehavior === "padding"
+        ? Math.max(
+            keyboard.height.value -
+              (config.disableSafeArea ? 0 : insets.bottom),
+            0
+          )
+        : 0),
+  }));
+
+  const cancelAndDestroy = () => {
+    onCancel();
+    destroy();
+  };
+
   const { animatedStyle, outsideViewStyle, handleLayout, close, gesture } =
-    useDialogAnimation(config, destroy);
-  useCancelOnBackButton(androidCancelOnClickBack, onCancel);
+    useDialogAnimation(config, cancelAndDestroy);
+  useCancelOnBackButton(androidCancelOnClickBack, cancelAndDestroy);
 
   useEffect(() => {
     if (dialog.isClosing) {
@@ -100,7 +115,7 @@ export const DialogView = (props: DialogViewProps) => {
   }, [dialog.isClosing]);
 
   return (
-    <View style={mainStyle}>
+    <Animated.View style={[MAIN_VIEW_STYLE, fixedMainStyle, animatedMainStyle]}>
       <TouchableWithoutFeedback
         onPress={quitOnTouchOutside ? onCancel : undefined}
       >
@@ -116,6 +131,6 @@ export const DialogView = (props: DialogViewProps) => {
           <Component key={dialog.id} {...context} />
         </Animated.View>
       </GestureWrapper>
-    </View>
+    </Animated.View>
   );
 };
