@@ -24,7 +24,7 @@ export const useDialogSlideAnimation = (
   }));
 
   return {
-    animatedStyle: animatedStyle,
+    animatedStyle,
     close,
     gesture,
     handleLayout,

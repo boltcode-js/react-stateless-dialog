@@ -12,7 +12,7 @@ import { useDialogAnimation } from "./animations/use-dialog-animation";
 import { DialogInstance } from "@react-stateless-dialog/core";
 import { horizontalToFlexAlign, verticalToFlexAlign } from "../common/utils";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useGestureWrapper } from "../common/use-gesture-wrapper";
+import { GestureWrapper } from "../common/gesture-wrapper";
 
 export type DialogViewProps = {
   dialog: DialogInstance<any, any>;
@@ -68,7 +68,7 @@ const useCancelOnBackButton = (
 export const DialogView = (props: DialogViewProps) => {
   const { dialog } = props;
   const { Component, config, context } = dialog;
-  const { onCancel, onConfirm, destroy } = context;
+  const { onCancel, destroy } = context;
 
   const { backgroundColor, quitOnTouchOutside, androidCancelOnClickBack } =
     config;
@@ -98,29 +98,6 @@ export const DialogView = (props: DialogViewProps) => {
     }
   }, [dialog.isClosing]);
 
-  // TODO: This should be a component, not a hook
-  const GestureWrapper = useGestureWrapper(gesture);
-
-  // TODO: Use Layout animation from reanimated:
-  // https://docs.swmansion.com/react-native-reanimated/docs/layout-animations/layout-transitions
-  /*const AnimatedComponent = useMemo(() => {
-    class ClazzCompo extends React.Component<DialogProps<any, any>, any> {
-      constructor(props: DialogProps<any, any>) {
-        super(props);
-      }
-
-      render() {
-        return <Component {...this.props} />;
-      }
-    }
-    return Animated.createAnimatedComponent(ClazzCompo);
-  }, [Component]);
-  return <AnimatedComponent
-      entering={SlideInRight}
-      exiting={SlideOutLeft}
-      {...context}
-  />*/
-
   return (
     <View style={mainStyle}>
       <TouchableWithoutFeedback
@@ -130,12 +107,9 @@ export const DialogView = (props: DialogViewProps) => {
           style={[OUTSIDE_VIEW_STYLE, { backgroundColor }, outsideViewStyle]}
         />
       </TouchableWithoutFeedback>
-      <GestureWrapper>
+      <GestureWrapper gesture={gesture}>
         <Animated.View
-          style={[
-            animatedStyle,
-            config.flex ? { flex: 1, backgroundColor: "blue" } : undefined,
-          ]}
+          style={[animatedStyle, config.flex ? { flex: 1 } : undefined]}
           onLayout={handleLayout}
         >
           <Component key={dialog.id} {...context} />

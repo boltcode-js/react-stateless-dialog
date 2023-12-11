@@ -11,5 +11,6 @@ export const FullscreenDialog: DialogComponent<null, null> = (props) => {
   );
 };
 
+FullscreenDialog.flex = true;
 FullscreenDialog.horizontal = 'stretch';
-// FullscreenDialog.flex = true;
+FullscreenDialog.animationType = 'slide';

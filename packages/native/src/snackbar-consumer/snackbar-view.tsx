@@ -7,7 +7,7 @@ import {
 } from "@react-stateless-dialog/core";
 import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useGestureWrapper } from "../common/use-gesture-wrapper";
+import { GestureWrapper } from "../common/gesture-wrapper";
 import { horizontalToFlexAlign, verticalToFlexAlign } from "../common/utils";
 
 export type SnackbarViewProps = {
@@ -62,14 +62,13 @@ export const SnackbarView = (props: SnackbarViewProps) => {
     }
   }, [insets]);
 
-  const GestureWrapper = useGestureWrapper(gesture);
   const handleClose = useCallback(() => {
     close(true);
   }, [close]);
 
   return (
     <View style={mainStyle} pointerEvents="box-none">
-      <GestureWrapper>
+      <GestureWrapper gesture={gesture}>
         <Animated.View
           style={animatedStyle}
           onLayout={handleLayout}
