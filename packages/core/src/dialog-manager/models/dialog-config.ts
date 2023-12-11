@@ -1,4 +1,5 @@
 import { RelativePosition } from "../../common/common.models";
+import { StyleProp, ViewStyle } from "react-native";
 
 export interface DialogConfig {
   /**
@@ -22,9 +23,11 @@ export interface DialogConfig {
   horizontal: "left" | "center" | "right" | "stretch";
 
   /**
-   * If true the parent container of the dialog will be flex
+   * The style of the parent container.
+   *
+   * TODO: This may not be on the core package because it depends on react-native types.
    */
-  flex: boolean;
+  containerStyle: StyleProp<ViewStyle>;
 
   /**
    * When animationType is set on "slide", this defines the initial position of the slide.
@@ -63,7 +66,7 @@ export const DIALOG_DEFAULT_CONFIG: DialogConfig = {
   animationType: "none",
   horizontal: "center",
   vertical: "center",
-  flex: false,
+  containerStyle: undefined,
   slideFromPosition: undefined,
   enableGesture: false,
   quitOnTouchOutside: false,

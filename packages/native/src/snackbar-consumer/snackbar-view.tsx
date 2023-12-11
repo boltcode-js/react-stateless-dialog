@@ -38,29 +38,20 @@ export const SnackbarView = (props: SnackbarViewProps) => {
   );
 
   const insets = useSafeAreaInsets();
-  const mainStyle = useMemo<StyleProp<ViewStyle>>(() => {
-    if (config.insideSafeArea) {
-      return [
-        MAIN_VIEW_STYLE,
-        {
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
-          paddingStart: insets.left,
-          paddingEnd: insets.right,
-          alignItems: horizontalToFlexAlign(config.horizontal),
-          justifyContent: verticalToFlexAlign(config.vertical),
-        },
-      ];
-    } else {
-      return [
-        MAIN_VIEW_STYLE,
-        {
-          alignItems: horizontalToFlexAlign(config.horizontal),
-          justifyContent: verticalToFlexAlign(config.vertical),
-        },
-      ];
-    }
-  }, [insets]);
+  const mainStyle = useMemo<StyleProp<ViewStyle>>(
+    () => [
+      MAIN_VIEW_STYLE,
+      {
+        paddingTop: config.insideSafeArea ? insets.top : 0,
+        paddingBottom: config.insideSafeArea ? insets.bottom : 0,
+        paddingStart: config.insideSafeArea ? insets.left : 0,
+        paddingEnd: config.insideSafeArea ? insets.right : 0,
+        alignItems: horizontalToFlexAlign(config.horizontal),
+        justifyContent: verticalToFlexAlign(config.vertical),
+      },
+    ],
+    [insets]
+  );
 
   const handleClose = useCallback(() => {
     close(true);

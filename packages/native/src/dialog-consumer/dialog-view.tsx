@@ -74,8 +74,8 @@ export const DialogView = (props: DialogViewProps) => {
     config;
 
   const insets = useSafeAreaInsets();
-  const mainStyle = useMemo<StyleProp<ViewStyle>>(() => {
-    return [
+  const mainStyle = useMemo<StyleProp<ViewStyle>>(
+    () => [
       MAIN_VIEW_STYLE,
       {
         paddingTop: config.disableSafeArea ? 0 : insets.top,
@@ -85,8 +85,9 @@ export const DialogView = (props: DialogViewProps) => {
         alignItems: horizontalToFlexAlign(config.horizontal),
         justifyContent: verticalToFlexAlign(config.vertical),
       },
-    ];
-  }, [insets]);
+    ],
+    [insets]
+  );
 
   const { animatedStyle, outsideViewStyle, handleLayout, close, gesture } =
     useDialogAnimation(config, destroy);
@@ -109,7 +110,7 @@ export const DialogView = (props: DialogViewProps) => {
       </TouchableWithoutFeedback>
       <GestureWrapper gesture={gesture}>
         <Animated.View
-          style={[animatedStyle, config.flex ? { flex: 1 } : undefined]}
+          style={[animatedStyle, config.containerStyle]}
           onLayout={handleLayout}
         >
           <Component key={dialog.id} {...context} />
