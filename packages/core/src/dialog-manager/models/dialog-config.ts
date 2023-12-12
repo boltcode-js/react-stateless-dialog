@@ -41,6 +41,11 @@ export interface DialogConfig {
   enableGesture: boolean;
 
   /**
+   * If true and enableGesture, the gesture will work on the fullscreen, not only the dialog
+   */
+  gestureFullscreen: boolean;
+
+  /**
    * How the content of the modal should react when keyboard open
    */
   keyboardBehavior: "padding" | undefined;
@@ -69,6 +74,7 @@ export const DIALOG_DEFAULT_CONFIG: DialogConfig = {
   containerStyle: undefined,
   slideFromPosition: undefined,
   enableGesture: false,
+  gestureFullscreen: false,
   quitOnTouchOutside: false,
   keyboardBehavior: undefined,
   androidCancelOnClickBack: false,

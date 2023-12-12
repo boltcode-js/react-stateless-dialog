@@ -115,22 +115,28 @@ export const DialogView = (props: DialogViewProps) => {
   }, [dialog.isClosing]);
 
   return (
-    <Animated.View style={[MAIN_VIEW_STYLE, fixedMainStyle, animatedMainStyle]}>
-      <TouchableWithoutFeedback
-        onPress={quitOnTouchOutside ? onCancel : undefined}
+    <GestureWrapper gesture={config.gestureFullscreen ? gesture : undefined}>
+      <Animated.View
+        style={[MAIN_VIEW_STYLE, fixedMainStyle, animatedMainStyle]}
       >
-        <Animated.View
-          style={[OUTSIDE_VIEW_STYLE, { backgroundColor }, outsideViewStyle]}
-        />
-      </TouchableWithoutFeedback>
-      <GestureWrapper gesture={gesture}>
-        <Animated.View
-          style={[animatedStyle, config.containerStyle]}
-          onLayout={handleLayout}
+        <TouchableWithoutFeedback
+          onPress={quitOnTouchOutside ? onCancel : undefined}
         >
-          <Component key={dialog.id} {...context} />
-        </Animated.View>
-      </GestureWrapper>
-    </Animated.View>
+          <Animated.View
+            style={[OUTSIDE_VIEW_STYLE, { backgroundColor }, outsideViewStyle]}
+          />
+        </TouchableWithoutFeedback>
+        <GestureWrapper
+          gesture={config.gestureFullscreen ? undefined : gesture}
+        >
+          <Animated.View
+            style={[animatedStyle, config.containerStyle]}
+            onLayout={handleLayout}
+          >
+            <Component key={dialog.id} {...context} />
+          </Animated.View>
+        </GestureWrapper>
+      </Animated.View>
+    </GestureWrapper>
   );
 };

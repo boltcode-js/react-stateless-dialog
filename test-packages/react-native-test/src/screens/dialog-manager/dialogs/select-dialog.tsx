@@ -46,6 +46,7 @@ SelectDialog.androidCancelOnClickBack = false;
 SelectDialog.quitOnTouchOutside = true;
 SelectDialog.animationType = 'slide';
 SelectDialog.enableGesture = true;
+SelectDialog.gestureFullscreen = true;
 SelectDialog.disableSafeArea = true;
 SelectDialog.horizontal = 'stretch';
 SelectDialog.vertical = 'bottom';
