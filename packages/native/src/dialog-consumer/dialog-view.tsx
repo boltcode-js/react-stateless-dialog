@@ -5,15 +5,13 @@ import {
   ViewStyle,
 } from "react-native";
 import React, { useEffect, useMemo } from "react";
-import Animated, {
-  useAnimatedKeyboard,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { useDialogAnimation } from "./animations/use-dialog-animation";
 import { DialogInstance } from "@react-stateless-dialog/core";
 import { horizontalToFlexAlign, verticalToFlexAlign } from "../common/utils";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GestureWrapper } from "../common/gesture-wrapper";
+import { useKeyboardHeight } from "../common/use-keyboard-height";
 
 export type DialogViewProps = {
   dialog: DialogInstance<any, any>;
@@ -75,7 +73,7 @@ export const DialogView = (props: DialogViewProps) => {
     config;
 
   const insets = useSafeAreaInsets();
-  const keyboard = useAnimatedKeyboard();
+  const keyboardHeight = useKeyboardHeight(!config.disableSafeArea);
   const fixedMainStyle = useMemo<ViewStyle>(
     () => ({
       paddingTop: config.disableSafeArea ? 0 : insets.top,
@@ -90,13 +88,7 @@ export const DialogView = (props: DialogViewProps) => {
   const animatedMainStyle = useAnimatedStyle(() => ({
     paddingBottom:
       (config.disableSafeArea ? 0 : insets.bottom) +
-      (config.keyboardBehavior === "padding"
-        ? Math.max(
-            keyboard.height.value -
-              (config.disableSafeArea ? 0 : insets.bottom),
-            0
-          )
-        : 0),
+      (config.keyboardBehavior === "padding" ? keyboardHeight.value : 0),
   }));
 
   const cancelAndDestroy = () => {
