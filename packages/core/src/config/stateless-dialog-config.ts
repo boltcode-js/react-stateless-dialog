@@ -27,7 +27,7 @@ export type StatelessDialogConfig = {
   };
 };
 
-export const overrideStatelessDialogConfig = (
+export const extendConfig = (
   defaultConfig: StatelessDialogConfig,
   userConfig: DeepPartial<StatelessDialogConfig>
 ): StatelessDialogConfig => {

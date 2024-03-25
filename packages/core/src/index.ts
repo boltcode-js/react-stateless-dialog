@@ -37,7 +37,7 @@ export type { SnackbarContext } from "./snackbar-manager/models/snackbar-context
 
 // Utils
 export { getGlobalConfig } from "./config/global-config";
-export { overrideStatelessDialogConfig } from "./config/stateless-dialog-config";
+export { extendConfig } from "./config/stateless-dialog-config";
 export { invertColor } from "./utils/utils";
 export type { StatelessDialogConfig } from "./config/stateless-dialog-config";
 export type {
@@ -54,3 +54,5 @@ export {
   getSlideStartPosition,
 } from "./common/slide-helpers";
 export { getAbsoluteLayout } from "./common/layout";
+
+export { createDialog } from "./utils/dialog-utils";

@@ -1,5 +1,6 @@
 import { RelativePosition } from "../../common/common.models";
 import { StyleProp, ViewStyle } from "react-native";
+import { CSSProperties } from "react";
 
 export interface DialogConfig {
   /**
@@ -24,10 +25,8 @@ export interface DialogConfig {
 
   /**
    * The style of the parent container.
-   *
-   * TODO: This may not be on the core package because it depends on react-native types.
    */
-  containerStyle: StyleProp<ViewStyle>;
+  containerStyle: CSSProperties | StyleProp<ViewStyle>;
 
   /**
    * When animationType is set on "slide", this defines the initial position of the slide.
@@ -36,32 +35,32 @@ export interface DialogConfig {
   slideFromPosition: RelativePosition | undefined;
 
   /**
-   * If true, you can use swipe gesture to close the dialog (only work with slide animation).
-   */
-  enableGesture: boolean;
-
-  /**
-   * If true and enableGesture, the gesture will work on the fullscreen, not only the dialog
-   */
-  gestureFullscreen: boolean;
-
-  /**
-   * How the content of the modal should react when keyboard open
-   */
-  keyboardBehavior: "padding" | undefined;
-
-  /**
    * Automatically cancel the dialog when touch outside of the view
    */
   quitOnTouchOutside: boolean;
 
   /**
-   * Perform a cancel when click on back button (android only)
+   * [NATIVE ONLY] If true, you can use swipe gesture to close the dialog (only work with slide animation).
+   */
+  enableGesture: boolean;
+
+  /**
+   * [NATIVE ONLY] If true and enableGesture, the gesture will work on the fullscreen, not only the dialog
+   */
+  gestureFullscreen: boolean;
+
+  /**
+   * [NATIVE ONLY] How the content of the modal should react when keyboard open
+   */
+  keyboardBehavior: "padding" | undefined;
+
+  /**
+   * [NATIVE ONLY] Perform a cancel when click on back button (android only).
    */
   androidCancelOnClickBack: boolean;
 
   /**
-   * The dialog will be shown outside the safeArea
+   * [NATIVE ONLY] The dialog will be shown outside the safeArea
    */
   disableSafeArea: boolean;
 }

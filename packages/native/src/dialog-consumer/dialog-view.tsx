@@ -4,7 +4,7 @@ import {
   TouchableWithoutFeedback,
   ViewStyle,
 } from "react-native";
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { useDialogAnimation } from "./animations/use-dialog-animation";
 import { DialogInstance } from "@react-stateless-dialog/core";
@@ -91,10 +91,10 @@ export const DialogView = (props: DialogViewProps) => {
       (config.keyboardBehavior === "padding" ? keyboardHeight.value : 0),
   }));
 
-  const cancelAndDestroy = () => {
+  const cancelAndDestroy = useCallback(() => {
     onCancel();
     destroy();
-  };
+  }, [onCancel, destroy]);
 
   const { animatedStyle, outsideViewStyle, handleLayout, close, gesture } =
     useDialogAnimation(config, cancelAndDestroy);
