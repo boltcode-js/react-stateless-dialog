@@ -2,7 +2,7 @@ import { DialogConfig } from "../dialog-manager/models/dialog-config";
 import React from "react";
 import { SnackbarConfig } from "../snackbar-manager/models/snackbar-config";
 import {
-  DefaultSnackbarProps,
+  DefaultSnackbarArgs,
   SnackbarComponent,
 } from "../snackbar-manager/models/snackbar-component";
 import { deepMerge, DeepPartial } from "../utils/utils";
@@ -18,7 +18,7 @@ export type StatelessDialogConfig = {
   snackbar: {
     defaultConfig?: Partial<SnackbarConfig>;
     Consumer: React.FunctionComponent;
-    DefaultSnackbar: SnackbarComponent<DefaultSnackbarProps>;
+    DefaultSnackbar: SnackbarComponent<DefaultSnackbarArgs>;
   };
 
   progress: {

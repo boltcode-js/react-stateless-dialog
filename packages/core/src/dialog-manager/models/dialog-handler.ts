@@ -32,7 +32,7 @@ export type DialogHandler<Result extends any> = {
 
   /**
    * Add an interceptor that handle the result. If the interceptor return false, the dialog is not closed after the result is handled.
-   * It can be used to preform validation before the dialog get closed.
+   * It can be used to perform validation before the dialog get closed.
    *
    * The function return the current DialogHandler, so you can chain your function call.
    */

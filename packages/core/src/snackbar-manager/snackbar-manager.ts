@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import {
-  DefaultSnackbarProps,
+  DefaultSnackbarArgs,
   SnackbarComponent,
 } from "./models/snackbar-component";
 import { SnackbarConfig } from "./models/snackbar-config";
@@ -15,7 +15,7 @@ export interface ISnackbarManager {
     config?: Partial<SnackbarConfig>
   ) => void;
   pushDefault: (
-    type: DefaultSnackbarProps["type"],
+    type: DefaultSnackbarArgs["type"],
     message: string,
     config?: Partial<SnackbarConfig>
   ) => void;
@@ -72,7 +72,7 @@ export const useSnackbarManager = create<ISnackbarManagerState>((set, get) => {
     snackbars: [],
     push,
     pushDefault: (
-      type: DefaultSnackbarProps["type"],
+      type: DefaultSnackbarArgs["type"],
       message: string,
       config?: Partial<SnackbarConfig>
     ) => {

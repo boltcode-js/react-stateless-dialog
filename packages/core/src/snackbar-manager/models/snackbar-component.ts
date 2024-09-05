@@ -11,9 +11,9 @@ export interface SnackbarComponent<Args extends any>
 }
 
 /**
- * SnackbarProps used for default Snackbar
+ * Snackbar arguments used for default Snackbar
  */
-export interface DefaultSnackbarProps {
+export interface DefaultSnackbarArgs {
   message: string;
   type: "info" | "success" | "warn" | "error";
 }

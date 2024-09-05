@@ -31,7 +31,7 @@ export { SNACKBAR_DEFAULT_CONFIG } from "./snackbar-manager/models/snackbar-conf
 export type { SnackbarInstance } from "./snackbar-manager/models/snackbar-instance";
 export type {
   SnackbarComponent,
-  DefaultSnackbarProps,
+  DefaultSnackbarArgs,
 } from "./snackbar-manager/models/snackbar-component";
 export type { SnackbarContext } from "./snackbar-manager/models/snackbar-context";
 
