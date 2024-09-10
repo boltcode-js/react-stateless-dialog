@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { StyleProp, View, ViewStyle } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import {
   SnackbarInstance,
   useSnackbarManager,
@@ -9,6 +9,7 @@ import { useSnackbarAnimation } from "./animations/use-snackbar-animation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GestureWrapper } from "../common/gesture-wrapper";
 import { horizontalToFlexAlign, verticalToFlexAlign } from "../common/utils";
+import { useKeyboardHeight } from "../common/use-keyboard-height";
 
 export type SnackbarViewProps = {
   snackbar: SnackbarInstance<any>;
@@ -43,7 +44,6 @@ export const SnackbarView = (props: SnackbarViewProps) => {
       MAIN_VIEW_STYLE,
       {
         paddingTop: config.insideSafeArea ? insets.top : 0,
-        paddingBottom: config.insideSafeArea ? insets.bottom : 0,
         paddingStart: config.insideSafeArea ? insets.left : 0,
         paddingEnd: config.insideSafeArea ? insets.right : 0,
         alignItems: horizontalToFlexAlign(config.horizontal),
@@ -53,12 +53,20 @@ export const SnackbarView = (props: SnackbarViewProps) => {
     [insets]
   );
 
+  const keyboardHeight = useKeyboardHeight(config.insideSafeArea);
+  const keyboardStyle = useAnimatedStyle(() => ({
+    paddingBottom:
+      (config.insideSafeArea ? insets.bottom : 0) +
+      (config.keyboardBehavior === "padding" ? keyboardHeight.value : 0),
+  }));
+  console.log("keyboardBehavior = ", config.keyboardBehavior);
+
   const handleClose = useCallback(() => {
     close(true);
   }, [close]);
 
   return (
-    <View style={mainStyle} pointerEvents="box-none">
+    <Animated.View style={[mainStyle, keyboardStyle]} pointerEvents="box-none">
       <GestureWrapper gesture={gesture}>
         <Animated.View
           style={animatedStyle}
@@ -72,6 +80,6 @@ export const SnackbarView = (props: SnackbarViewProps) => {
           />
         </Animated.View>
       </GestureWrapper>
-    </View>
+    </Animated.View>
   );
 };

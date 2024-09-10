@@ -4,7 +4,9 @@ import { useSharedValue, withTiming } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export const useKeyboardHeight = (adjustSafeArea?: boolean) => {
-  const offsetY = useSharedValue(0);
+  const offsetY = useSharedValue(
+    Keyboard.isVisible() ? Keyboard.metrics().height : 0
+  );
   const safearea = useSafeAreaInsets();
 
   useEffect(() => {

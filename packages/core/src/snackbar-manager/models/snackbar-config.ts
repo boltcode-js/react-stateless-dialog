@@ -39,6 +39,11 @@ export type SnackbarConfig = {
    * If true, the snackbar will be contained inside the SafeArea
    */
   insideSafeArea: boolean;
+
+  /**
+   * [NATIVE ONLY] How the content of the modal should react when keyboard open
+   */
+  keyboardBehavior: "padding" | undefined;
 };
 
 export const SNACKBAR_DEFAULT_CONFIG: SnackbarConfig = {
@@ -49,4 +54,5 @@ export const SNACKBAR_DEFAULT_CONFIG: SnackbarConfig = {
   slideFromPosition: undefined,
   insideSafeArea: false,
   enableGesture: false,
+  keyboardBehavior: "padding",
 };
