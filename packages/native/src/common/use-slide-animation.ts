@@ -95,7 +95,7 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
   }));
 
   const getCloseAnimation = useCallback(
-    (isDelayed: boolean) => {
+    (isDelayed: boolean, overrideInitialOffset?: number) => {
       if (isDelayed && !args.autoCloseDelay) {
         return null;
       }
@@ -107,12 +107,6 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
         }
       }
 
-      const closeAnim = withTiming(
-        initialOffset.value,
-        { duration: ANIMATION_DURATION },
-        handleFinished
-      );
-
       if (isDelayed) {
         return withDelay(
           args.autoCloseDelay,
@@ -123,7 +117,7 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
               }
             }),
             withTiming(
-              initialOffset.value,
+              overrideInitialOffset || initialOffset.value,
               { duration: ANIMATION_DURATION },
               handleFinished
             )
@@ -131,7 +125,11 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
         );
       } else {
         status.value = "finishing";
-        return closeAnim;
+        return withTiming(
+          overrideInitialOffset || initialOffset.value,
+          { duration: ANIMATION_DURATION },
+          handleFinished
+        );
       }
     },
     [args.autoCloseDelay, args.destroy]
@@ -168,7 +166,9 @@ export const useSlideAnimation = (args: UseSlideAnimationArgs) => {
           withTiming(0, { duration: ANIMATION_DURATION }, () => {
             status.value = "waiting";
           }),
-          args.autoCloseDelay ? getCloseAnimation(true) : undefined,
+          args.autoCloseDelay
+            ? getCloseAnimation(true, tmpInitialOffset)
+            : undefined,
         ].filter((x) => !!x)
       );
     },

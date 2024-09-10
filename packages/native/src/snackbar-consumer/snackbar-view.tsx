@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import { StyleProp, View, ViewStyle } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import {
   SnackbarInstance,
@@ -53,7 +53,10 @@ export const SnackbarView = (props: SnackbarViewProps) => {
     [insets]
   );
 
-  const keyboardHeight = useKeyboardHeight(config.insideSafeArea);
+  const keyboardHeight = useKeyboardHeight(
+    config.insideSafeArea,
+    config.insideSafeArea ? 10 : 0
+  );
   const keyboardStyle = useAnimatedStyle(() => ({
     paddingBottom:
       (config.insideSafeArea ? insets.bottom : 0) +
@@ -65,10 +68,10 @@ export const SnackbarView = (props: SnackbarViewProps) => {
   }, [close]);
 
   return (
-    <Animated.View style={[mainStyle, keyboardStyle]} pointerEvents="box-none">
+    <View style={mainStyle} pointerEvents="box-none">
       <GestureWrapper gesture={gesture}>
         <Animated.View
-          style={animatedStyle}
+          style={[animatedStyle, keyboardStyle]}
           onLayout={handleLayout}
           pointerEvents="box-none"
         >
@@ -79,6 +82,6 @@ export const SnackbarView = (props: SnackbarViewProps) => {
           />
         </Animated.View>
       </GestureWrapper>
-    </Animated.View>
+    </View>
   );
 };
