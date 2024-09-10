@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { StyleProp, View, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle } from "react-native";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import {
   SnackbarInstance,
@@ -59,7 +59,6 @@ export const SnackbarView = (props: SnackbarViewProps) => {
       (config.insideSafeArea ? insets.bottom : 0) +
       (config.keyboardBehavior === "padding" ? keyboardHeight.value : 0),
   }));
-  console.log("keyboardBehavior = ", config.keyboardBehavior);
 
   const handleClose = useCallback(() => {
     close(true);

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Text, TextStyle, View, ViewStyle } from "react-native";
 import {
-  DefaultSnackbarProps,
+  DefaultSnackbarArgs,
   SnackbarComponent,
   invertColor,
 } from "@react-stateless-dialog/core";
@@ -22,7 +22,7 @@ const DEFAULT_SNACKBAR_CONFIG = {
   padding: 10,
 };
 
-export const DefaultSnackbar: SnackbarComponent<DefaultSnackbarProps> = (
+export const DefaultSnackbar: SnackbarComponent<DefaultSnackbarArgs> = (
   props
 ) => {
   const { args, config } = props;

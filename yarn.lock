@@ -2177,6 +2177,11 @@
   dependencies:
     nanoid "^3.1.23"
 
+"@react-stateless-dialog/native@^0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@react-stateless-dialog/native/-/native-0.3.5.tgz#ac1bbd4c52b73af34936b3eeabd55a2ca3d7239f"
+  integrity sha512-QD6nrz1Hxz3f0uLkHHVJjlRTeqAV0Hd+8YG36fQo6P3FUvkX9bKx+/l++PXxcbyJFgMaa+t0KbhRpCLU7k9yBQ==
+
 "@sideway/address@^4.1.3":
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/@sideway/address/-/address-4.1.4.tgz#03dccebc6ea47fdc226f7d3d1ad512955d4783f0"
