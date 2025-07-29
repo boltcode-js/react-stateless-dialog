@@ -5,7 +5,7 @@
     "directory": "packages/core",
     "type": "git"
   },
-  "version": "0.4.0-beta2",
+  "version": "0.4.0-beta4",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "types/index.d.ts",
@@ -22,13 +22,13 @@
     "compile": "tsc --noEmit"
   },
   "peerDependencies": {
-    "react": "^18.2.0"
+    "react": "^19.1.1"
   },
   "dependencies": {
-    "zustand": "^4.4.1"
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
-    "@types/react-native": "^0.72.8",
+    "@types/react-native": "^0.73.0",
     "typescript": "4.8.4"
   }
 }
