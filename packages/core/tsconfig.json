@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json",
+  "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "outDir": "./lib",
     "declarationDir": "./types",
@@ -7,6 +7,7 @@
     "strictNullChecks": false,
     "noEmit": false,
     "declaration": true,
+    "allowImportingTsExtensions" : false,
     "types": ["react-native", "jest", "node"],
     "jsx": "react"
   },

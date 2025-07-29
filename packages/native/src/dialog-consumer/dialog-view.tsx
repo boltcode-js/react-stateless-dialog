@@ -1,6 +1,6 @@
 import {
   BackHandler,
-  Platform,
+  Platform, StyleProp,
   TouchableWithoutFeedback,
   ViewStyle,
 } from "react-native";
@@ -122,7 +122,7 @@ export const DialogView = (props: DialogViewProps) => {
           gesture={config.gestureFullscreen ? undefined : gesture}
         >
           <Animated.View
-            style={[animatedStyle, config.containerStyle]}
+            style={[animatedStyle, config.containerStyle as StyleProp<ViewStyle>]}
             onLayout={handleLayout}
           >
             <Component key={dialog.id} {...context} />
